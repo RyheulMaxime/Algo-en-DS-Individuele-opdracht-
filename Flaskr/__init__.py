@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, render_template
 from .config import Config
+
 # from .db import db
 
 
@@ -33,9 +34,12 @@ def create_app(test_config=None):
     # def hello():
     #     return 'Hello, World!'
 
-    @app.route('/')
-    def index():
-        return render_template("index.html")
-        # return 'Test'
+    from .routes import main
+    app.register_blueprint(main)
+
+    # @app.route('/')
+    # def index():
+    #     return render_template("index.html")
+    #     # return 'Test'
 
     return app

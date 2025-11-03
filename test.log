@@ -1,0 +1,30 @@
+ * Debugger is active!
+ * Debugger PIN: 113-342-595
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 113-342-595
+127.0.0.1 - - [02/Nov/2025 20:46:06] "[35m[1mGET / HTTP/1.1[0m" 500 -
+127.0.0.1 - - [02/Nov/2025 20:46:06] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [02/Nov/2025 20:46:06] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+127.0.0.1 - - [02/Nov/2025 20:46:06] "GET /?__debugger__=yes&cmd=resource&f=console.png&s=8zGFeJ8wMwHDV9r0mB32 HTTP/1.1" 200 -
+ * Detected change in 'C:\\Users\\maxim\\Documents\\School\\HIR\\HIR_Jaar_3\\Sem 1\\Algoritmen en datastructuren\\Individuele-opdracht\\Algo-en-DS-Individuele-opdracht-\\Flaskr\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 113-342-595
+ * Detected change in 'C:\\Users\\maxim\\Documents\\School\\HIR\\HIR_Jaar_3\\Sem 1\\Algoritmen en datastructuren\\Individuele-opdracht\\Algo-en-DS-Individuele-opdracht-\\Flaskr\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 113-342-595
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 113-342-595
+Not loged in
+127.0.0.1 - - [02/Nov/2025 20:46:29] "GET / HTTP/1.1" 200 -
+ * Detected change in 'C:\\Users\\maxim\\Documents\\School\\HIR\\HIR_Jaar_3\\Sem 1\\Algoritmen en datastructuren\\Individuele-opdracht\\Algo-en-DS-Individuele-opdracht-\\Flaskr\\routes.py', reloading
+ * Restarting with stat

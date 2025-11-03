@@ -6,8 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    <header></header>
-    <h1>Hello Max</h1>
-    <footer></footer>
+    {% if username %}
+        <h1>Welcome, {{ username }}!</h1>
+    {% else %}
+        <h1>Hello, World!</h1>
+    {% endif %}
 </body>
 </html>

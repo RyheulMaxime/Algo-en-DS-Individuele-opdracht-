@@ -1,0 +1,667 @@
+/*------------------------------------*\
+#FONTS
+\*------------------------------------*/
+
+/*------------------------------------*\
+#Variables
+\*------------------------------------*/
+
+:root {
+    /* colors */
+    --global-color-alpha-dark: #1A4A1C;
+    --global-color-alpha: #29742C;
+
+    --global-color-neutral-xxxx-light: #F0F0F7;
+    --global-color-neutral-xxx-light: #EBEBF2;
+    --global-color-neutral-xx-light: #D7DAE2;
+    --global-color-neutral-x-light: #BCBCCB;
+    --global-color-neutral-light: #A5A4BF;
+    --global-color-neutral: #808495;
+    --global-color-neutral-dark: #4D4F5C;
+    --global-color-neutral-x-dark: #43425D;
+    --global-color-neutral-xx-dark: #3B3B53;
+
+    --global-color-button-corect:#20D428;
+    --global-color-button-corect-light:#12FF12;
+    
+    --global-color-button-wrong:#D12721;
+    --global-color-button-wrong-light:#EB160E;
+
+    /* Shadows */
+    --global-input-focus-boxShadow: 0 2px 3px var(--global-color-neutral-x-light);
+
+    /* border */
+    --global-borderWidth: 2px;
+    --global-borderRadius:8px;
+
+    /* transitions */
+    --global-transitionTiming-alpha: .1s ease-out;
+
+    /* Whitespace */
+    --global-baseline: 1rem/2;  /* 8px */
+    --global-whitespace-xs: var(--global-baseline); /* 16px */
+    --global-whitespace-sm: calc(var(--global-baseline) * 2); /* 16px */
+    --global-whitespace-md: calc(var(--global-baseline) * 3); /* 24px */
+    --global-whitespace-lg: calc(var(--global-baseline) * 4); /* 32px */
+    --global-whitespace-xl: calc(var(--global-baseline) * 5); /* 40px */
+    --global-whitespace-xxl: calc(var(--global-baseline) * 6); /* 48px */
+}
+
+/*------------------------------------*\
+#GENERIC
+\*------------------------------------*/
+
+/*
+    Generic: Page
+    ---
+    Global page styles + universal box-sizing:
+*/
+
+html {
+    font-size: 100%;
+    line-height: 1.5;
+    font-family: "source-sans-pro", Helvetica, arial, sans-serif;
+    /* color: var(--global-color-neutral-xxxx-light); */
+    /* background-color: var(--global-color-alpha); */
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+/*
+* Remove text-shadow in selection highlight:
+* https://twitter.com/miketaylr/status/12228805301
+*
+* Customize the background color to match your design.
+*/
+
+::-moz-selection {
+    background: LightGrey;
+    color: white;
+    text-shadow: none;
+}
+
+::selection {
+    background: black;
+    color: white;
+    text-shadow: none;
+    background: black;
+    color: var(--global-color-alpha);
+}
+
+/*------------------------------------*\
+#Elements
+\*------------------------------------*/
+
+/*
+Elements: Images
+---
+Default markup for images to make them responsive
+*/
+
+img {
+    max-width: 100%;
+    vertical-align: top;
+}
+
+/*
+    Elements: typography
+    ---
+    Default markup for typographic elements
+*/
+
+h1,
+h2,
+h3 {
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 2.25rem;
+    line-height: 3rem;
+    margin: 0 0 var(--global-whitespace-md);
+}
+
+h2 {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    margin: 0 0 var(--global-whitespace-md);
+}
+
+h3 {
+    font-size: 1.625rem;
+    line-height: 2rem;
+    margin: 0 0 var(--global-whitespace-md);
+}
+
+h4,
+h5,
+h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    margin: 0 0 var(--global-whitespace-md);
+}
+
+p,
+ol,
+ul,
+dl,
+table,
+address,
+figure {
+    margin: 0 0 var(--global-whitespace-md);
+}
+
+ul,
+ol {
+    padding-left: var(--global-whitespace-md);
+}
+
+li ul,
+li ol {
+    margin-bottom: 0;
+}
+
+blockquote {
+    font-style: normal;
+    font-size: 1.4375rem;
+    line-height: 2rem;
+    margin: 0 0 var(--global-whitespace-md);
+}
+
+blockquote * {
+    font-size: inherit;
+    line-height: inherit;
+}
+
+figcaption {
+    font-weight: 400;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    margin-top: var(--global-baseline);
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: LightGrey;
+    margin: 0 0 var(--global-whitespace-md);
+}
+
+a {
+    color: LightGrey;
+    outline-color: LightGrey;
+    outline-width: medium;
+    outline-offset: 2px;
+}
+
+a:visited,
+a:active {
+    color: var(--color-alpha);
+}
+
+a:hover,
+a:focus {
+    color: black;
+}
+
+label,
+input {
+    display: block;
+}
+
+select {
+    width: 100%;
+}
+
+input::placeholder {
+    color: white;
+}
+
+/*------------------------------------*\
+#OBJECTS
+\*------------------------------------*/
+
+/*
+    Objects: Row
+    ---
+    Creates a horizontal row that stretches the viewport and adds padding around children
+*/
+
+.o-row {
+    position: relative;
+    padding: var(--global-whitespace-md) var(--global-whitespace-md) 0;
+    min-height: 100vh;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    
+}
+
+.o-row-item{
+    width: 1200px;
+}
+
+/*
+    Objects: Container
+    ---
+    Creates a horizontal container that sets de global max-width
+*/
+
+.o-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 79.5em; /* 79.5 * 16px = 1272 */
+    width: 100%;
+}
+
+/*
+    Objects: Gid
+    ---
+    creates the grid for the web page
+*/
+
+.o-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 4rem 720px 15rem 25em ;
+    gap: var(--global-whitespace-md);
+}
+
+@media (max-width: 576px) {
+    .o-grid{
+        grid-template-rows: 4rem 400px 15rem 25em;
+    }
+}
+
+/*
+    Object: Button reset
+    ---
+    Small button reset object
+*/
+
+.o-button-reset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+
+    /* inherit font & color from ancestor */
+    color: inherit;
+    font: inherit;
+
+    /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+    line-height: normal;
+
+    /* Corrects font smoothing for webkit */
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+
+    /* Corrects inability to style clickable `input` types in iOS */
+    -webkit-appearance: none;
+}
+
+
+/*------------------------------------*\
+#COMPONENTS
+\*------------------------------------*/
+
+/*
+    Component: Title
+    ---
+    Website main title
+*/
+.c-title{
+     /* color: white; */
+     justify-self: center;
+     /* font-weight: 600; */
+}
+
+@media (max-width: 576px) {
+    .c-title{
+        font-size: 1.5rem;
+    }
+}
+
+
+/*
+    Component: products
+    ---
+    website visualization of products 
+*/ 
+
+.c-products{
+    /* display: flex;
+    flex-flow: row wrap;
+    justify-content: center; */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: var(--global-whitespace-md);
+    padding: var(--global-baseline);
+    margin: var(--global-baseline);
+}
+
+
+.c-product{
+    background-color: var(--global-color-neutral-xxxx-light);
+    border-radius: var(--global-borderRadius);
+    /* padding: var(--global-baseline); */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+@media (max-width: 576px) {
+    .c-products{
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+
+}
+
+/*
+    Component: Button
+    ---
+    Class to put on form buttons or
+*/
+
+
+.c-button {    
+    --button-borderColor: var(--global-color-neutral-xxxx-light);
+    /* --button-hover-borderColor: var(--global-color-button-corect-light);
+    --button-active-borderColor: var(--global-color-button-corect-light);
+    --button-focus-borderColor:var(--global-color-button-corect-light); */
+    --button-backgroundColor: var(--global-color-button-corect);
+    --button-hover-backgroundColor: var(--global-color-button-corect-light);
+    --button-active-backgroundColor: var(--global-color-button-corect-light);
+    --button-focus-backgroundColor: var(--global-color-button-corect);    
+    --button-focus-boxShadow: var(--global-input-focus-boxShadow);
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--global-borderRadius);
+    border: var(--global-borderWidth) solid var(--button-borderColor);
+    background-color: var(--button-backgroundColor);
+    color: #fff;
+    line-height: calc(var(--global-baseline) * 3);
+    padding: calc(var(--global-baseline) * 1.5 - var(--global-borderWidth)) var(--global-whitespace-lg);
+    /* width: 100%; */
+    outline: none;
+    box-shadow: var(--button-boxShadow, 0);
+    transition: background-color 0.3s;
+}
+
+.c-button:hover {
+    border-color: var(--button-borderColor);
+    background-color: var(--button-hover-backgroundColor);
+    box-shadow: var(--button-focus-boxShadow);
+}
+
+.c-button:focus {
+    background-color: var(--button-focus-backgroundColor);
+    border-color: var(--button-borderColor);
+    box-shadow: var(--button-focus-boxShadow);
+}
+
+.c-button:active {
+    background-color: var(--button-active-backgroundColor);
+    border-color: var(--button-borderColor);
+    box-shadow: var(--button-focus-boxShadow, 0);
+}
+
+
+.is-wrong{
+    --button-borderColor: var(--global-color-neutral-xxxx-light);
+    /* --button-hover-borderColor: var(--global-color-button-corect-light);
+    --button-active-borderColor: var(--global-color-button-corect-light);
+    --button-focus-borderColor:var(--global-color-button-corect-light); */
+    --button-backgroundColor: var(--global-color-button-wrong);
+    --button-hover-backgroundColor: var(--global-color-button-wrong-light);
+    --button-active-backgroundColor: var(--global-color-button-wrong-light);
+    --button-focus-backgroundColor: var(--global-color-button-wrong);    
+    --button-focus-boxShadow: var(--global-input-focus-boxShadow);
+}
+
+/*------------------------------------*\
+#UTILITIES
+\*------------------------------------*/
+
+/*
+    Utilities: color
+    ---
+    Utility classes to put specific colors onto elements
+*/
+
+.u-color-neutral {
+    color: var(--color-neutral);
+}
+
+.u-color-neutral-dark {
+    color: var(--color-neutral-dark);
+}
+
+/*
+    Utilities: spacing
+    ---
+    Utility classes to put specific margins and paddings onto elements
+*/
+
+.u-pt-clear {
+    padding-top: 0 !important;
+}
+
+.u-mb-clear {
+    margin-bottom: 0 !important;
+}
+
+.u-mb-xs {
+    margin-bottom: 4px !important;
+}
+
+.u-mb-sm {
+    margin-bottom: 8px !important;
+}
+
+.u-mb-md {
+    margin-bottom: 16px !important;
+}
+
+.u-mb-lg {
+    margin-bottom: 32px !important;
+}
+
+.u-mb-xl {
+    margin-bottom: 48px !important;
+}
+
+/*
+    Utilities: max-width
+    ---
+    Utility classes to put specific max widths onto elements
+*/
+
+.u-max-width-xs {
+    max-width: 27em !important;
+}
+
+.u-max-width-sm {
+    max-width: 39em !important;
+}
+
+.u-max-width-md {
+    max-width: 50em !important;
+}
+
+.u-max-width-lg {
+    max-width: 63.5em !important;
+}
+
+.u-max-width-none {
+    max-width: none !important;
+}
+
+
+/*
+    Utilities: align
+    ---
+    Utility classes align text or components
+*/
+
+.u-align-text-center {
+    text-align: center;
+}
+
+.u-align-center {
+    margin: 0 auto;
+}
+
+/*
+    Utilities: text
+    Utility classes to create smaller or bigger test
+*/
+
+.u-text-sm {
+    font-size: 0.875rem;
+}
+
+/*
+    Utilities: grid
+    Utility classes to adjust items to grid
+*/
+
+@media (max-width: 992px){
+    .u-grid-column-2-bp2{
+        grid-column: span 2;
+    }
+    .u-grid-column-4-bp2{
+        grid-column: span 4;
+    }
+    .u-grid-column-6-bp2{
+        grid-column: span 6;
+    }
+    .u-grid-column-8-bp2{
+        grid-column: span 8;
+    }
+    
+    .u-grid-row-2-bp2{
+        grid-row: span 2;
+    }
+    .u-grid-row-4-bp2{
+        grid-row: span 4;
+    }
+}
+
+
+
+/*------------------------------------*\
+#MEDIA
+\*------------------------------------*/
+
+/*
+    Media Queries
+    ---
+    EXAMPLE Media Queries for Responsive Design.
+    These examples override the primary ('mobile first') styles.
+    USE THEM INLINE!
+*/
+
+/* Extra small devices (portrait phones, less than 576px)
+No media query since this is the default in mobile first design
+*/
+
+/* Small devices (landscape phones, 576px and up) */
+/* @media (min-width: 576px) {
+    
+} */
+
+
+/* Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+*/
+
+/* Large devices (landscape tablets, desktops, 992px and up)
+@media (min-width: 992px) {}
+*/
+
+/* Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {}
+*/
+
+/*
+    Print styles.
+    ---
+    Inlined to avoid the additional HTTP request:
+    http://www.phpied.com/delay-loading-your-print-css/
+*/
+
+@media print {
+    *,
+    *:before,
+    *:after {
+        background: transparent !important;
+        color: #000 !important;
+        /* Black prints faster:
+        http://www.sanbeiji.com/archives/953 */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+    /*
+    * Don't show links that are fragment identifiers,
+    * or use the `javascript:` pseudo protocol
+    */
+    a[href^="#"]:after,
+    a[href^="javascript:"]:after {
+        content: "";
+    }
+    pre {
+        white-space: pre-wrap !important;
+    }
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+    /*
+    * Printing Tables:
+    * http://css-discuss.incutio.com/wiki/Printing_Tables
+    */
+    thead {
+        display: table-header-group;
+    }
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}

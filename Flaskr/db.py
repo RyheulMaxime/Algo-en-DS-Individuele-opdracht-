@@ -2,13 +2,13 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(80), unique=True, nullable=False)
-#     print("User created")
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    print("User created")
 
-#     def __repr__(self):
-#         return f'<User {self.username}>'
+    def __repr__(self):
+        return f'<User {self.username}>'
 
 # class User(db.Model):
 #     __tablename__ = "user"
@@ -34,4 +34,4 @@ class Products(db.Model):
     # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f'<Products , ${self.productid}, ${self.productname}, ${self.price}>'
+        return f'<Products , ${self.productid}, ${self.productname}, ${self.price}, ${self.createdat}, ${self.unit}>'

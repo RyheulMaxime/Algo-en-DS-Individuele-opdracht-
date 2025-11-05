@@ -3,16 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>AL&DS Shop</title>
+
+    <link rel="stylesheet" href="../static/normalize.css">
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    {% if products %}
-        <!-- <h1>Welcome, {{ username }}!</h1> -->
-        {% for product in products %}
-            <p>{{ product.productname }}</p>
-        {% endfor %}
-    {% else %}
-        <h1>Hello, World!</h1>
-    {% endif %}
+    <header></header>
+    <div class="c-products u-grid-column-2-bp2">
+        {% if products %}
+            <!-- <h1>Welcome, {{ username }}!</h1> -->
+            {% for product in products %}
+                <div class="c-product">
+                    <p>{{ product.productname }}</p>
+                    <p>${{ product.price }}</p>
+                    <!-- <a href="/product/{{ product.productid }}">View product</a> -->
+                    <p>${{ product.unit }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h1>No products found</h1>
+        {% endif %}
+    </div>
 </body>
 </html>

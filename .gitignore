@@ -3,6 +3,7 @@
 *.pyc
 __pycache__/
 
+# eigen instance folder met config.py locaal om niet data database online te delen
 instance/
 
 .pytest_cache/

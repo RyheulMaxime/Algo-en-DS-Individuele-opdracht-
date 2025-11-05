@@ -6,8 +6,11 @@
     <title>Document</title>
 </head>
 <body>
-    {% if username %}
-        <h1>Welcome, {{ username }}!</h1>
+    {% if products %}
+        <!-- <h1>Welcome, {{ username }}!</h1> -->
+        {% for product in products %}
+            <p>{{ product.productname }}</p>
+        {% endfor %}
     {% else %}
         <h1>Hello, World!</h1>
     {% endif %}

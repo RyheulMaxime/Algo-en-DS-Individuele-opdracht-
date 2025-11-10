@@ -7,19 +7,11 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     print("User created")
 
-    def __repr__(self):
-        return f'<User {self.username}>'
+    # def __repr__(self):
+    #     return f'<User {self.username}>'
 
-# class User(db.Model):
-#     __tablename__ = "user"
-#     __table_args__ = {'schema': 'public'}
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(80), unique=True, nullable=False)
-
-#     def __repr__(self):
-#         print(f'<User {self.username}>')
-#         return f'<User {self.username}>'
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class Products(db.Model):
@@ -32,6 +24,61 @@ class Products(db.Model):
     createdat = db.Column(db.String(100), nullable=False)
 
     # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-    def __repr__(self):
-        return f'<Products , ${self.productid}, ${self.productname}, ${self.price}, ${self.createdat}, ${self.unit}>'
+
+class Categories(db.Model):
+    categoryid = db.Column(db.Integer, primary_key=True)
+    categoryname = db.Column(db.String(100), primary_key=False)
+    description = db.Column(db.String(256), primary_key=False)
+    
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+class Customers(db.Model):
+    customerid = db.Column(db.Integer, primary_key=True)
+    customername = db.Column(db.String(100), primary_key=False)
+    contactname = db.Column(db.String(100), primary_key=False)
+    address = db.Column(db.String(100), primary_key=False)
+    city = db.Column(db.String(100), primary_key=False)
+    postalcode = db.Column(db.String(100), primary_key=False)
+    country = db.Column(db.String(100), primary_key=False)
+    
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    
+class Suppliers(db.Model):
+    supplierid = db.Column(db.Integer, primary_key=True)
+    suppliername = db.Column(db.String(100), primary_key=False)
+    contactname = db.Column(db.String(100), primary_key=False)
+    address = db.Column(db.String(100), primary_key=False)
+    city = db.Column(db.String(100), primary_key=False)
+    postalcode = db.Column(db.String(100), primary_key=False)
+    country = db.Column(db.String(100), primary_key=False)
+    
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    
+class Orders(db.Model):
+    orderid = db.Column(db.Integer, primary_key=True)
+    customerid = db.Column(db.Integer, primary_key=False)
+    employeeid = db.Column(db.Integer, primary_key=False)
+    orderdate = db.Column(db.String(100), primary_key=False)
+    shipperid = db.Column(db.Integer, primary_key=False)
+    delivered = db.Column(db.Boolean, primary_key=False)
+    createdat = db.Column(db.Date, primary_key=False)
+    
+    
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+class OrderDetails(db.Model):
+    orderdetailid = db.Column(db.Integer, primary_key=True)
+    orderid = db.Column(db.Integer, primary_key=False)
+    productid = db.Column(db.Integer, primary_key=False)
+    quantity = db.Column(db.Integer, primary_key=False)
+    
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

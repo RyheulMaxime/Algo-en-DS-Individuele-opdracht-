@@ -232,6 +232,19 @@ input::placeholder {
 \*------------------------------------*/
 
 /*
+    Objects: Header
+    ---
+    
+*/
+
+o-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--global-whitespace-md) var(--global-whitespace-md) 0;
+}
+
+/*
     Objects: Row
     ---
     Creates a horizontal row that stretches the viewport and adds padding around children

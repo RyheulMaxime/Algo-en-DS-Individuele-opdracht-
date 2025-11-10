@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <header></header>
+    <header class="o-header">
+        <div class="o-header__title" href="/">
+            <h1>AL&DS Shop</h1>
+        </div>
+    </header>
     <div class="c-products u-grid-column-2-bp2">
         {% if products %}
             <!-- <h1>Welcome, {{ username }}!</h1> -->
@@ -18,7 +22,7 @@
                     <p>{{ product.productname }}</p>
                     <p>${{ product.price }}</p>
                     <!-- <a href="/product/{{ product.productid }}">View product</a> -->
-                    <p>${{ product.unit }}</p>
+                    <p>{{ product.unit }}</p>
                 </div>
             {% endfor %}
         {% else %}

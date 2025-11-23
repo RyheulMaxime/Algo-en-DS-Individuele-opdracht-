@@ -14,7 +14,10 @@
             <h1>AL&DS Shop</h1>
         </div>
     </header>
-    <input class="js-search", placeholder="Give your seatch term"></input>
+
+    <label for="search-input">Search products:</label>
+    <input class="js-search", placeholder="Give your seatch term">
+
     <label for="ordering">Sort products bij:</label>
     <select name="ordering" id="ordering" class="js-selector">
         <option value="Category">Category</option>
@@ -26,7 +29,7 @@
     <div class="c-products u-grid-column-2-bp2">
         {% if products %}
             {% for product in products %}
-                <div class="c-product" id="{{ product.productid }}" href="/product/{{ product.productid }}">
+                <div class="c-product js-product" data-id="{{ product.productid }}" href="/product/{{ product.productid }}" data-name="{{product.productname}}">
                     <p>{{ product.productname }}</p>
                     <p>${{ product.price }}</p>
                     <p>{{ product.unit }}</p>
@@ -41,18 +44,28 @@
         const socket = io();
         socket.on("log", data => console.log(data.msg));
 
-        let sorting_type = document.querySelector(".js-selector");
-        sorting_type.onchange = function(){
-            console.log(sorting_type.value);
-            socket.emit("sort", sorting_type.value);
-        }
+        const sortingSelector = document.querySelector(".js-selector"); 
+        sortingSelector.addEventListener("change", () => { 
+            console.log(sortingSelector.value); 
+            socket.emit("sort", sortingSelector.value); 
+        });
         
-        document.querySelector(".js-search").addEventListener("input", (event) => socket.emit("search", event.target.value, sorting_type.value));
-        socket.on("update_list_server", data => 
-            // console.log(data.msg)
-            pass
+        const products = Array.from(document.getElementsByClassName("js-product"));
+        const searchInput = document.querySelector(".js-search");
         
-        );
+        searchInput.addEventListener("input", (event) => { 
+            // console.log(event.target.value);
+            const searchTerm = event.target.value.toLowerCase(); 
+            products.forEach(product => { 
+                const name = product.dataset.name.toLowerCase(); 
+                product.style.display = name.includes(searchTerm) ? "block" : "none"; 
+            }); 
+        });
+        
+        // socket.on("update_list_server", data => 
+        //     // console.log(data.msg)
+        //     pass
+        // );
 
     </script>
 </body>

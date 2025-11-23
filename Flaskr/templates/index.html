@@ -14,22 +14,21 @@
             <h1>AL&DS Shop</h1>
         </div>
     </header>
+    <input class="js-search", placeholder="Give your seatch term"></input>
     <label for="ordering">Sort products bij:</label>
-    <select name="ordering" id="ordering">
+    <select name="ordering" id="ordering" class="js-selector">
         <option value="Category">Category</option>
-        <option value="Price">Price Low-High</option>
-        <option value="Price">Price High-Low</option>
+        <option value="Price Low-High">Price Low-High</option>
+        <option value="Price High-Low">Price High-Low</option>
         <option value="A-Z">A-Z</option>
         <option value="Z-A">Z_A</option>
     </select>
     <div class="c-products u-grid-column-2-bp2">
         {% if products %}
-            <!-- <h1>Welcome, {{ username }}!</h1> -->
             {% for product in products %}
                 <div class="c-product" id="{{ product.productid }}" href="/product/{{ product.productid }}">
                     <p>{{ product.productname }}</p>
                     <p>${{ product.price }}</p>
-                    <!-- <a href="/product/{{ product.productid }}">View product</a> -->
                     <p>{{ product.unit }}</p>
                 </div>
             {% endfor %}
@@ -41,6 +40,20 @@
     <script>
         const socket = io();
         socket.on("log", data => console.log(data.msg));
+
+        let sorting_type = document.querySelector(".js-selector");
+        sorting_type.onchange = function(){
+            console.log(sorting_type.value);
+            socket.emit("sort", sorting_type.value);
+        }
+        
+        document.querySelector(".js-search").addEventListener("input", (event) => socket.emit("search", event.target.value, sorting_type.value));
+        socket.on("update_list_server", data => 
+            // console.log(data.msg)
+            pass
+        
+        );
+
     </script>
 </body>
 </html>

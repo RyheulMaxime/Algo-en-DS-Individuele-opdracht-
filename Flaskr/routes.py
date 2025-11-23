@@ -17,8 +17,6 @@ def index(productId=None):
         return render_template('index.html', products=products)
     # current_app.logger.info("Products not found") # Used for logging server side
     return render_template('index.html', products=None)
-    
-
 
 
 # @main.route('/product/')
@@ -60,12 +58,8 @@ def database(productId=None):
     #     users = User.query.all()
     #     return {"users": [u.to_dict() for u in users]}
     # elif table == 'all':
-    #     return {"users": [u.username for u in User.query.all()], "products": [p.productname for p in Products.query.all()]}
-    
-    # products = Products.query.all()
-    # print(products)
-    # return {"products": [p.productname for p in products]}
-    
+    #     return {"users": [u.username for u in User.query.all()], "products": [p.productname for p in Products.query.all()]}    
+ 
 
 # Socket.IO event inside the blueprint
 @socketio.on("connect")
@@ -73,5 +67,26 @@ def connected():
     print(f"Client connected: {request.sid}")
     emit("log", {"msg": "Client connected!"})
 
+@socketio.on('message')
+def handle_message(data):
+    print('received message: ' + data)
 
-# @socketio.on("log")
+@socketio.on('sort')
+def sort_products(data):
+    print("sort_products")
+    print('received message: ' + data)
+
+@socketio.on('search')
+def search_products(data):
+    print("search_products")
+    print('received message: ' + data)
+
+@socketio.on('update_list_from_server')
+def update_list_from_server(data):
+    pass
+
+
+@socketio.on("disconnect")
+def disconnected():
+    print(f"Client disconnected: {request.sid}")
+    emit("log", {"msg": "Client disconnected!"})

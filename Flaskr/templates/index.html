@@ -14,11 +14,19 @@
             <h1>AL&DS Shop</h1>
         </div>
     </header>
+    <label for="ordering">Sort products bij:</label>
+    <select name="ordering" id="ordering">
+        <option value="Category">Category</option>
+        <option value="Price">Price Low-High</option>
+        <option value="Price">Price High-Low</option>
+        <option value="A-Z">A-Z</option>
+        <option value="Z-A">Z_A</option>
+    </select>
     <div class="c-products u-grid-column-2-bp2">
         {% if products %}
             <!-- <h1>Welcome, {{ username }}!</h1> -->
             {% for product in products %}
-                <div class="c-product">
+                <div class="c-product" id="{{ product.productid }}" href="/product/{{ product.productid }}">
                     <p>{{ product.productname }}</p>
                     <p>${{ product.price }}</p>
                     <!-- <a href="/product/{{ product.productid }}">View product</a> -->
@@ -29,5 +37,10 @@
             <h1>No products found</h1>
         {% endif %}
     </div>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        socket.on("log", data => console.log(data.msg));
+    </script>
 </body>
 </html>

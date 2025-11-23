@@ -1,15 +1,21 @@
-from flask import Blueprint, request, redirect, url_for, render_template, session
+from flask import Blueprint, request, redirect, url_for, render_template, session, logging
 from .db import *
+from logging.config import dictConfig
+from flask import current_app
+from flask_socketio import emit # <-- Only import emit
+from . import socketio   # import socketio from the app package
+
 
 main = Blueprint('main', __name__)
 
-@main.route('/')
+@main.route('/', methods=['GET'])
 def index(productId=None):
     products = Products.query.all()
-    
+    # connected()
     if products is not None:
+        # current_app.logger.info(products) # Used for logging server side
         return render_template('index.html', products=products)
-    
+    # current_app.logger.info("Products not found") # Used for logging server side
     return render_template('index.html', products=None)
     
 
@@ -22,7 +28,7 @@ def index(productId=None):
 
 
 # Test database and check connection
-@main.route('/database/')
+@main.route('/database/', methods=['GET'])
 def database(productId=None):
     table = request.args.get('table')
     if table is None:
@@ -48,11 +54,11 @@ def database(productId=None):
     elif table == 'shippers':
         pass
     elif table == 'suppliers':
-        suppliers = Products.query.all()
+        suppliers = Suppliers.query.all()
         return {"suppliers": [s.to_dict() for s in suppliers]}
-    elif table == 'users':
-        users = User.query.all()
-        return {"users": [u.to_dict() for u in users]}
+    # elif table == 'users':
+    #     users = User.query.all()
+    #     return {"users": [u.to_dict() for u in users]}
     # elif table == 'all':
     #     return {"users": [u.username for u in User.query.all()], "products": [p.productname for p in Products.query.all()]}
     
@@ -60,3 +66,12 @@ def database(productId=None):
     # print(products)
     # return {"products": [p.productname for p in products]}
     
+
+# Socket.IO event inside the blueprint
+@socketio.on("connect")
+def connected():
+    print(f"Client connected: {request.sid}")
+    emit("log", {"msg": "Client connected!"})
+
+
+# @socketio.on("log")

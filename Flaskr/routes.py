@@ -11,13 +11,57 @@ main = Blueprint('main', __name__)
 @main.route('/', methods=['GET'])
 def index(productId=None):
     products = Products.query.all()
-    # connected()
+    sorting_system = request.args.get('sort').lower()
+    print("************************** sorting system: ", sorting_system)
+    if sorting_system is None:
+        sorting_system = "Category"
+
     if products is not None:
+        sorted_products = None
+        if sorting_system == "category":
+            sorted_products = sort_by_category(products)
+            print(sorted_products)
+            # sorted_products = sorted(products, key=lambda p: p.category)
+        elif sorting_system == "price low-high":
+            sorted_products = sorted(products, key=lambda p: p.price)
+        elif sorting_system == "price high-low":
+            sorted_products = sorted(products, key=lambda p: p.price, reverse=True)
+        elif sorting_system == "a-z":
+            sorted_products = sorted(products, key=lambda p: p.productname)
+        elif sorting_system == "z-a":
+            sorted_products = sorted(products, key=lambda p: p.productname, reverse=True)
+        # print(products)
+        # sorted_products = []
+        # sorted_products = sorted(products, key=lambda p: p.productname)
+        # for product in sorted_products:
+        #     print(product.productname)
         # current_app.logger.info(products) # Used for logging server side
-        return render_template('index.html', products=products)
+        if sorted_products is not None:
+            return render_template('index.html', products=sorted_products, sorting_system=sorting_system)
+        return render_template('index.html', products=products, sorting_system=sorting_system)
     # current_app.logger.info("Products not found") # Used for logging server side
     return render_template('index.html', products=None)
 
+# not sure if needed
+def sort_alphabetically(products, sorting_system):
+    pass
+
+# not sure if needed
+def sort_by_price(products, sorting_system):
+    pass
+
+
+def sort_by_category(products):
+    categorties = Categories.query.all()
+    sorted_products = {}
+    for category in categorties:
+        sorted_products[category.categoryname] = []    
+    for product in products:
+        for category in categorties:
+            if product.categoryid == category.categoryid:
+                sorted_products[category.categoryname].append(product)
+    # print(sorted_products)
+    return sorted_products
 
 # @main.route('/product/')
 # @main.route('/product/<productId>')
@@ -62,29 +106,29 @@ def database(productId=None):
  
 
 # Socket.IO event inside the blueprint
-@socketio.on("connect")
-def connected():
-    print(f"Client connected: {request.sid}")
-    emit("log", {"msg": "Client connected!"})
+# @socketio.on("connect")
+# def connected():
+#     print(f"Client connected: {request.sid}")
+#     emit("log", {"msg": "Client connected!"})
 
+# Send message to console of the client
 @socketio.on('message')
 def handle_message(data):
     print('received message: ' + data)
 
-@socketio.on('sort')
-def sort_products(data):
-    print("sort_products")
-    print('received message: ' + data)
+# @socketio.on('sort')
+# def sort_products(data):
+#     print("sort_products")
+#     print('received message: ' + data)
 
-@socketio.on('search')
-def search_products(data):
-    print("search_products")
-    print('received message: ' + data)
+# @socketio.on('search')
+# def search_products(data):
+#     print("search_products")
+#     print('received message: ' + data)
 
-@socketio.on('update_list_from_server')
-def update_list_from_server(data):
-    pass
-
+# @socketio.on('update_list_from_server')
+# def update_list_from_server(data):
+#     pass
 
 @socketio.on("disconnect")
 def disconnected():

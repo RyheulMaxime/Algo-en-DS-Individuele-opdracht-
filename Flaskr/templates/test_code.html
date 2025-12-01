@@ -238,9 +238,11 @@
           <h2 style="grid-column:1/-1;margin:.25rem 0 .5rem;color:var(--muted);font-size:.95rem">{{ key }}</h2>
           {% for product in value %}
             <article class="product js-product" tabindex="0"
-                     data-id="{{ product.productid }}"
-                     data-name="{{ product.productname|default('') }}"
-                     data-price="{{ product.price|default(0) }}">
+                    data-id="{{ product.productid }}"
+                    data-supllier="{{ product.suplierid }}"
+                    data-category="{{ product.categoryid }}"
+                    data-name="{{ product.productname|default('') }}"
+                    data-price="{{ product.price|default(0) }}">
               <p class="title">{{ product.productname }}</p>
               <p class="meta">{{ product.unit }}</p>
               <p class="price">${{ '%.2f'|format(product.price) }}</p>
@@ -250,9 +252,11 @@
       {% elif products %}
         {% for product in products %}
           <article class="product js-product" tabindex="0"
-                   data-id="{{ product.productid }}"
-                   data-name="{{ product.productname|default('') }}"
-                   data-price="{{ product.price|default(0) }}">
+                data-id="{{ product.productid }}"
+                data-supllier="{{ product.supplierid }}"
+                data-category="{{ product.categoryid }}"
+                data-name="{{ product.productname|default('') }}"
+                data-price="{{ product.price|default(0) }}">
             <p class="title">{{ product.productname }}</p>
             <p class="meta">{{ product.unit }}</p>
             <p class="price">${{ '%.2f'|format(product.price) }}</p>
@@ -309,28 +313,32 @@
       // Keyboard accessibility: Enter on product -> navigate
       function bindProductInteractions(){
         getProductNodes().forEach(node => {
-          node.addEventListener('click', () => navigateToProduct(node.dataset.id));
+          node.addEventListener('click', () => navigateToProduct(node.dataset.id, node.dataset.supllier, node.dataset.category));
           node.addEventListener('keydown', (e) => {
             if(e.key === 'Enter' || e.key === ' '){
               e.preventDefault();
-              navigateToProduct(node.dataset.id);
+              navigateToProduct(node.dataset.id, node.dataset.supllier, node.dataset.category);
             }
           });
         });
       }
 
       // Navigation stub - adapt to real routing in your app
-      function navigateToProduct(id){
+      function navigateToProduct(id, supplier, category){
         if(!id) return;
         // Example: client-side route (or server route)
         // window.location.href = '/product/' + encodeURIComponent(id);
         // We choose a query param path to match earlier examples:
-        window.location.href = '/product?id=' + encodeURIComponent(id);
+        window.location.href = '/product?id=' + encodeURIComponent(id) + '&supplierid=' + encodeURIComponent(supplier) + '&categoryid=' + encodeURIComponent(category);
       }
 
       // Sorting: send user to backend with sorting param
       function applySorting(){
-        const val = ordering.value || 'category';
+        const val = ordering.value;
+        if(val == "") {
+          window.location.href = '/';
+          return
+        };
         // Map to expected server query param values if needed
         window.location.href = '/?sorting_system=' + encodeURIComponent(val);
       }
@@ -353,11 +361,11 @@
       filterProductsBySearch(searchInput.value || '');
 
       // Expose for console debugging (only in dev)
-      window.__ALDS = {
-        filterProductsBySearch,
-        getProductNodes,
-        navigateToProduct
-      };
+    //   window.__ALDS = {
+    //     filterProductsBySearch,
+    //     getProductNodes,
+    //     navigateToProduct
+    //   };
     })();
   </script>
 </body>

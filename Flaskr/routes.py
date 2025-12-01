@@ -9,7 +9,7 @@ from . import socketio   # import socketio from the app package
 main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET'])
-def index(productId=None):
+def index():
     products = Products.query.all()
     sorting_system = request.args.get('sorting_system')
     print("************************** sorting system: ", sorting_system)
@@ -48,7 +48,6 @@ def sort_alphabetically(products, sorting_system):
 def sort_by_price(products, sorting_system):
     pass
 
-
 def sort_by_category(products):
     categorties = Categories.query.all()
     sorted_products = {}
@@ -61,15 +60,30 @@ def sort_by_category(products):
     # print(sorted_products)
     return sorted_products
 
-# @main.route('/product/')
-# @main.route('/product/<productId>')
-# def product(productId=None):
-#     return render_template('product.html', product=productId)
+# @main.route('/product/<productId>', methods=['GET'])
+@main.route('/product', methods=['GET'])
+def product(product_id=None):
+    # try:
+    #     product_id = request.args.get('id')
+    # except Exception as e:
+    #     print(e)
+    product_id = request.args.get('id')
+    supplier_id = request.args.get('supplierid')
+    category_id = request.args.get('categoryid')
+    print("overview")
+    print(product_id, supplier_id, category_id)
+    
+    if product_id is None or supplier_id is None or category_id is None:
+        return render_template('product.html', product=None)
+    product_info = Products.query.get((int(product_id), int(supplier_id), int(category_id)))
+    print("product info: ", product_info)
+    # return render_template('product.html', product=product_id)
+    return render_template('product.html', product=product_info)
 
 
 # Test database and check connection
 @main.route('/database/', methods=['GET'])
-def database(productId=None):
+def database():
     table = request.args.get('table')
     if table is None:
         pass

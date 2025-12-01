@@ -12,11 +12,11 @@ main = Blueprint('main', __name__)
 def index():
     products = Products.query.all()
     sorting_system = request.args.get('sorting_system')
-    print("************************** sorting system: ", sorting_system)
+    # print("************************** sorting system: ", sorting_system)
     if sorting_system is None:
         return render_template('test_code.html', products=products, sorting_system=sorting_system)
         # sorting_system = "Category"
-    print("************************** sorting system: ", sorting_system)
+    # print("************************** sorting system: ", sorting_system)
 
     if products is not None:
         sorted_products = None
@@ -32,7 +32,7 @@ def index():
         elif sorting_system.lower() == "name_desc":
             sorted_products = sorted(products, key=lambda p: p.productname, reverse=True)
         if sorted_products is not None:
-            print(sorted_products)
+            # print(sorted_products)
             return render_template('test_code.html', products=sorted_products, sorting_system=sorting_system)
         return render_template('test_code.html', products=products, sorting_system=sorting_system)
     return render_template('test_code.html', products=None)

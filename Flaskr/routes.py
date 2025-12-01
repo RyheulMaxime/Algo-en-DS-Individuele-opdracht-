@@ -11,36 +11,34 @@ main = Blueprint('main', __name__)
 @main.route('/', methods=['GET'])
 def index(productId=None):
     products = Products.query.all()
-    sorting_system = request.args.get('sort').lower()
+    sorting_system = request.args.get('sorting_system')
     print("************************** sorting system: ", sorting_system)
     if sorting_system is None:
-        sorting_system = "Category"
+        return render_template('test_code.html', products=products, sorting_system=sorting_system)
+        # sorting_system = "Category"
+    print("************************** sorting system: ", sorting_system)
 
     if products is not None:
         sorted_products = None
-        if sorting_system == "category":
+        if sorting_system.lower() == "category":
             sorted_products = sort_by_category(products)
-            print(sorted_products)
             # sorted_products = sorted(products, key=lambda p: p.category)
-        elif sorting_system == "price low-high":
+        elif sorting_system.lower() == "price_asc":
             sorted_products = sorted(products, key=lambda p: p.price)
-        elif sorting_system == "price high-low":
+        elif sorting_system.lower() == "price_desc":
             sorted_products = sorted(products, key=lambda p: p.price, reverse=True)
-        elif sorting_system == "a-z":
+        elif sorting_system.lower() == "name_asc":
             sorted_products = sorted(products, key=lambda p: p.productname)
-        elif sorting_system == "z-a":
+        elif sorting_system.lower() == "name_desc":
             sorted_products = sorted(products, key=lambda p: p.productname, reverse=True)
-        # print(products)
-        # sorted_products = []
-        # sorted_products = sorted(products, key=lambda p: p.productname)
-        # for product in sorted_products:
-        #     print(product.productname)
-        # current_app.logger.info(products) # Used for logging server side
         if sorted_products is not None:
-            return render_template('index.html', products=sorted_products, sorting_system=sorting_system)
-        return render_template('index.html', products=products, sorting_system=sorting_system)
-    # current_app.logger.info("Products not found") # Used for logging server side
-    return render_template('index.html', products=None)
+            print(sorted_products)
+            return render_template('test_code.html', products=sorted_products, sorting_system=sorting_system)
+        return render_template('test_code.html', products=products, sorting_system=sorting_system)
+    return render_template('test_code.html', products=None)
+            # return render_template('index.html', products=sorted_products, sorting_system=sorting_system)
+        # return render_template('index.html', products=products, sorting_system=sorting_system)
+    # return render_template('index.html', products=None)
 
 # not sure if needed
 def sort_alphabetically(products, sorting_system):

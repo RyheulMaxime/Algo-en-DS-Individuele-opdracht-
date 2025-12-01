@@ -4,37 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AL&DS Shop</title>
-
-    <link rel="stylesheet" href="../static/normalize.css">
-    <link rel="stylesheet" href="../static/style.css">
+    
+    <!-- More official inplementation CSS, possibly later  -->
+    <!-- <link rel="stylesheet" href="../static/normalize.css">
+    <link rel="stylesheet" href="../static/style.css"> -->
 </head>
 <body>
     <header class="o-header">
-        <div class="o-header__title" href="/">
+        <div class="o-header__title">
             <h1>AL&DS Shop</h1>
         </div>
     </header>
 
     <label for="search-input">Search products:</label>
-    <input id="search-input" class="js-search" type="text" placeholder="Give your seatch term">
+    <input id="search-input" class="js-search" type="text" placeholder="Give your search term">
 
     <label for="ordering">Sort products bij:</label>
     <select name="ordering" id="ordering" class="js-selector">
         <option value="Category">Category</option>
-        <option value="Price Low-High">Price Low-High</option>
-        <option value="Price High-Low">Price High-Low</option>
+        <option value="Price_Low-High">Price Low-High</option>
+        <option value="Price_High-Low">Price High-Low</option>
         <option value="A-Z">A-Z</option>
         <option value="Z-A">Z_A</option>
     </select>
+    <button class="o-button c-sort-button" onclick=sortProducts()>Sort</button>
     <div class="c-products u-grid-column-2-bp2">
         {% if sorting_system == "category" %}
-            <script>console.log("Test");</script>
-            <script>console.log("{{ sorted_system }}");</script>
+            <!-- <script>console.log("Test");</script>
+            <script>console.log("{{ sorted_system }}");</script> -->
             {% for key, value in products.items() %}
                 <h2>{{ key }}</h2>
-                <!-- <div>{{ value }}</div> -->
                 {% for product in value %}
-                    <div class="c-product js-product" data-id="{{ product.productid }}" data-name="{{product.productname}}">
+                    <div class="c-product js-product" data-id="{{ product.productid }}" data-name="{{product.productname}}" onclick=navigateToProduct(this.dataset.id)>
                         <p>{{ product.productname }}</p>
                         <p>${{ product.price }}</p>
                         <p>{{ product.unit }}</p>
@@ -57,12 +58,6 @@
     <script>
         const socket = io();
         socket.on("log", data => console.log(data.msg));
-
-        // const sortingSelector = document.querySelector(".js-selector"); 
-        // sortingSelector.addEventListener("change", () => { 
-        //     console.log(sortingSelector.value); 
-        //     socket.emit("sort", sortingSelector.value); 
-        // });
         
         const products = Array.from(document.getElementsByClassName("js-product"));
         const searchInput = document.querySelector(".js-search");
@@ -76,10 +71,17 @@
             }); 
         });
         
-        // socket.on("update_list_server", data => 
-        //     // console.log(data.msg)
-        //     pass
-        // );
+        function navigateToProduct(product_id) {
+            console.log("test");
+            console.log(product_id);
+        };
+
+        function sortProducts() {
+            const selector = document.getElementById("ordering");
+            const selectedValue = selector.options[selector.selectedIndex].value;
+            window.location.href = "/?sorting_system=" + selectedValue;
+        };
+
 
     </script>
 </body>

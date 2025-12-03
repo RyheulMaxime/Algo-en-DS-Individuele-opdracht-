@@ -3,17 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>AL&DS Shop — Product Info</title>
+
+    <style>
+        /* ----------- Global ----------- */
+        
+        :root {
+            --primary: #6b4bff;
+            --primary-dark: #5336d3;
+            --card-bg: #fff;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0,0,0,0.08);
+            --transition: 0.25s ease;
+            --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.12);
+            --brand-1:#5337ff;
+            --brand-2:#3116c1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f7f7f9;
+            margin: 0;
+            /*  */
+            color: #333;
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        /* ----------- Layout ----------- */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            padding: 2rem;
+
+        }
+
+        @media (max-width: 800px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ----------- Cards ----------- */
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        /* ----------- Order Box ----------- */
+        .order-label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        #quantity {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid #ccc;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: var(--primary);
+            border: none;
+            color: white;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Header */
+        header.site-header{
+            background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+            color: #fff;
+            padding: clamp(1.25rem, 3vw, 2.5rem);
+            text-align:center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        header .brand {
+            margin:0;
+            font-weight:700;
+            letter-spacing:0.6px;
+            font-size: clamp(1.25rem, 2.4vw, 2.2rem);
+        }
+
+        header .tagline {
+            margin: .35rem 0 0;
+            font-weight:500;
+            color: rgba(255,255,255,0.92);
+            opacity:0.95;
+            font-size: .95rem;
+        }
+
+        /* ----------- Modal ----------- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .modal {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn var(--transition);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-btn {
+            margin-top: 1rem;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Test product</h1>
-    <title>Products</title>
-    {% if product %}
-    <h1>Hello {{ product.productname }}!</h1>
+    <header class="site-header" role="banner">
+        <h1 class="brand">AL&amp;DS Shop</h1>
+        <p class="tagline">Curated products — clean design, delightful shopping</p>
+    </header>
+
+    {% if product and supplier and category %}
+    <div class="container">
+        <!-- Product details -->
+        <div class="js-product_info" id={{ product.productid }}>
+            <h1>{{ product.productname }}</h1>
+            <p class="price">${{ product.price }}</p>
+            <p><strong>Unit:</strong> {{ product.unit }}</p>
+            <p><strong>Category:</strong> {{ category.categoryname }}</p>
+            <p><strong>Supplier:</strong> 
+                <a href="/supplier?id={{ supplier.supplierid }}">{{ supplier.suppliername }}</a>
+            </p>
+        </div>
+
+        <!-- Order Box -->
+        <div class="order_box">
+            <label class="order-label" for="quantity">How much would you like to order?</label>
+            <input id="quantity" type="number" min="1" value="1">
+
+            <button id="order-btn">Order product</button>
+        </div>
+
+    </div>
+
     {% else %}
-    <h1>Hello, World!</h1>
+        <h1>Product not found</h1>
     {% endif %}
+
+    <!-- Modal -->
+    <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal">
+            <h2>Order Failed</h2>
+            <p>The product could not be ordered.</p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const modal = document.getElementById("modal-overlay");
+        const btn = document.getElementById("order-btn");
+
+        btn.onclick = orderProduct;
+
+        function orderProduct() {
+            const qty = document.getElementById("quantity").value;
+            const product_id = document.querySelector(".js-product_info").id;
+
+            if (!qty || qty <= 0) {
+                showModal();
+                return;
+            }
+
+            // Backend call
+            socket.emit("order", { productid: product_id, quantity:  qty});
+        }
+
+        // TOODO Add order succes modal and failure modal
+        socket.on("order_failed", data => {
+            console.log('order failed');
+            showModal();
+        });
+
+        function showModal() {
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // Close on ESC
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeModal();
+        });
+    </script>
+
 </body>
 </html>
-
-

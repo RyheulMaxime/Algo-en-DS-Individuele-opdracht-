@@ -8,6 +8,41 @@ from . import socketio   # import socketio from the app package
 
 main = Blueprint('main', __name__)
 
+# not sure if needed
+def sort_alphabetically(products, sorting_system):
+    pass
+
+# not sure if needed
+def sort_by_price(products, sorting_system):
+    pass
+
+def sort_by_category(products):
+    categorties = Categories.query.all()
+    sorted_products = {}
+    for category in categorties:
+        sorted_products[category.categoryname] = []    
+    for product in products:
+        for category in categorties:
+            if product.categoryid == category.categoryid:
+                sorted_products[category.categoryname].append(product)
+    # print(sorted_products)
+    return sorted_products
+
+# Order functions
+def place_order(product_id, quantity):
+    order_success = False
+    print("place_order")
+    print(product_id, quantity)
+    
+    # ad logics to place an order
+
+    if order_success:
+        return "Order placed successfully"
+    else:
+        socketio.emit('order_failed', {'productid': product_id})
+        return "Order failed"
+
+
 @main.route('/', methods=['GET'])
 def index():
     products = Products.query.all()
@@ -40,25 +75,6 @@ def index():
         # return render_template('index.html', products=products, sorting_system=sorting_system)
     # return render_template('index.html', products=None)
 
-# not sure if needed
-def sort_alphabetically(products, sorting_system):
-    pass
-
-# not sure if needed
-def sort_by_price(products, sorting_system):
-    pass
-
-def sort_by_category(products):
-    categorties = Categories.query.all()
-    sorted_products = {}
-    for category in categorties:
-        sorted_products[category.categoryname] = []    
-    for product in products:
-        for category in categorties:
-            if product.categoryid == category.categoryid:
-                sorted_products[category.categoryname].append(product)
-    # print(sorted_products)
-    return sorted_products
 
 # @main.route('/product/<productId>', methods=['GET'])
 @main.route('/product', methods=['GET'])
@@ -70,16 +86,17 @@ def product(product_id=None):
     product_id = request.args.get('id')
     supplier_id = request.args.get('supplierid')
     category_id = request.args.get('categoryid')
-    print("overview")
-    print(product_id, supplier_id, category_id)
+    # print("overview")
+    # print(product_id, supplier_id, category_id)
     
     if product_id is None or supplier_id is None or category_id is None:
         return render_template('product.html', product=None)
     product_info = Products.query.get((int(product_id), int(supplier_id), int(category_id)))
+    supplier_info = Suppliers.query.get(int(supplier_id))
+    category_info = Categories.query.get(int(category_id))
     print("product info: ", product_info)
     # return render_template('product.html', product=product_id)
-    return render_template('product.html', product=product_info)
-
+    return render_template('product.html', product=product_info, supplier = supplier_info, category = category_info)
 
 # Test database and check connection
 @main.route('/database/', methods=['GET'])
@@ -115,34 +132,20 @@ def database():
     #     return {"users": [u.to_dict() for u in users]}
     # elif table == 'all':
     #     return {"users": [u.username for u in User.query.all()], "products": [p.productname for p in Products.query.all()]}    
- 
 
-# Socket.IO event inside the blueprint
-# @socketio.on("connect")
-# def connected():
-#     print(f"Client connected: {request.sid}")
-#     emit("log", {"msg": "Client connected!"})
+# Socket.IO endpoints
 
 # Send message to console of the client
 @socketio.on('message')
 def handle_message(data):
     print('received message: ' + data)
 
-# @socketio.on('sort')
-# def sort_products(data):
-#     print("sort_products")
-#     print('received message: ' + data)
 
-# @socketio.on('search')
-# def search_products(data):
-#     print("search_products")
-#     print('received message: ' + data)
+@socketio.on('order')
+def handle_message(data):
+    # print('received order: ')
+    # print(data)
+    # print(quantity)
+    place_order(data['productid'], data['quantity'])
 
-# @socketio.on('update_list_from_server')
-# def update_list_from_server(data):
-#     pass
 
-@socketio.on("disconnect")
-def disconnected():
-    print(f"Client disconnected: {request.sid}")
-    emit("log", {"msg": "Client disconnected!"})

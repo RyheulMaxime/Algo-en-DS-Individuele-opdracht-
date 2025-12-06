@@ -1,88 +1,366 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AL&DS Shop</title>
-    
-    <!-- More official inplementation CSS, possibly later  -->
-    <!-- <link rel="stylesheet" href="../static/normalize.css">
-    <link rel="stylesheet" href="../static/style.css"> -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AL&DS Shop — Home</title>
+  <meta name="description" content="AL&DS Shop — premium, responsive product listing" />
+
+  <!-- Basic, self-contained styling for the homepage -->
+  <style>
+    :root{
+      --bg:#f5f6f7;
+      --muted:#777;
+      --text:#121214;
+      --surface:#ffffff;
+      --brand-1:#5337ff;
+      --brand-2:#3116c1;
+      --card-radius:16px;
+      --space-sm:0.5rem;
+      --space-md:1rem;
+      --space-lg:1.5rem;
+      --max-width:1100px;
+      --focus: 3px solid rgba(83,55,255,0.16);
+      --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+      --shadow-lg: 0 4px 20px rgba(0,0,0,0.12);
+      --break-sm: 720px;
+    }
+
+    /* Reset-ish */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.35;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Header */
+    header.site-header{
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      color: #fff;
+      padding: clamp(1.25rem, 3vw, 2.5rem);
+      text-align:center;
+      box-shadow: var(--shadow-lg);
+    }
+    header .brand {
+      margin:0;
+      font-weight:700;
+      letter-spacing:0.6px;
+      font-size: clamp(1.25rem, 2.4vw, 2.2rem);
+    }
+
+    header .tagline {
+      margin: .35rem 0 0;
+      font-weight:500;
+      color: rgba(255,255,255,0.92);
+      opacity:0.95;
+      font-size: .95rem;
+    }
+
+    /* Search & Sort wrapper */
+    .controls {
+      max-width: var(--max-width);
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr 200px 120px;
+      gap: var(--space-md);
+      align-items:center;
+    }
+    @media (max-width:720px){
+      .controls{ grid-template-columns: 1fr 140px; grid-auto-rows: auto; gap: .75rem; }
+      .controls > *:nth-child(3){ grid-column: 1 / -1; }
+    }
+
+    /* Inputs */
+    .control-field{
+      display:flex;
+      align-items:center;
+      gap:.6rem;
+    }
+    label[for]{
+      display:none; /* visually hidden labels will be used via aria-label; keep DOM clean */
+    }
+    input[type="search"], select{
+      width:100%;
+      padding:.75rem 1rem;
+      border-radius:12px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size:1rem;
+      outline: none;
+    }
+    input[type="search"]:focus, select:focus{
+      box-shadow: var(--focus);
+      border-color: var(--brand-1);
+    }
+    button.sort-btn{
+      padding:.75rem 1rem;
+      border-radius:12px;
+      border:0;
+      background: linear-gradient(180deg,var(--brand-1),var(--brand-2));
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .14s ease, box-shadow .14s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    button.sort-btn:active{ transform: translateY(1px) }
+    button.sort-btn:focus{ box-shadow: var(--focus) }
+
+    /* Grid */
+    .products-grid{
+      max-width: var(--max-width);
+      margin: 1rem auto 3rem;
+      padding: 0 1rem;
+      display:grid;
+      gap:1.7rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      align-items:start;
+    }
+
+    .product {
+      background: var(--surface);
+      border-radius: var(--card-radius);
+      padding: 1.2rem;
+      box-shadow: var(--shadow-sm);
+      transition: transform .22s ease, box-shadow .22s ease;
+      cursor: pointer;
+      display:flex;
+      flex-direction:column;
+      gap:.5rem;
+      min-height:120px;
+      outline: none;
+    }
+    .product:focus, .product:hover{
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .product .title{
+      font-weight:600;
+      font-size:1rem;
+      color:var(--text);
+      margin:0;
+    }
+    .product .meta{
+      color:var(--muted);
+      font-size:.9rem;
+      margin:0;
+    }
+    .product .price{
+      margin-top:auto;
+      font-weight:700;
+      color:var(--brand-1);
+      font-size:1.05rem;
+    }
+
+    /* Empty state & info */
+    .empty-state{
+      text-align:center;
+      padding:3rem 1rem;
+      color:var(--muted);
+      font-size:1.05rem;
+    }
+
+    /* Accessibility helpers */
+    .visually-hidden{
+      position:absolute!important;
+      height:1px; width:1px;
+      overflow:hidden;
+      clip:rect(1px, 1px, 1px, 1px);
+      white-space:nowrap;
+      border:0;
+      padding:0;
+      margin:-1px;
+    }
+
+    /* Reduced motion preference */
+    @media (prefers-reduced-motion: reduce){
+      .product{ transition:none }
+    }
+  </style>
 </head>
 <body>
-    <header class="o-header">
-        <div class="o-header__title">
-            <h1>AL&DS Shop</h1>
-        </div>
-    </header>
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <h1 class="brand">AL&amp;DS Shop</h1>
+    <p class="tagline">Curated products — clean design, delightful shopping</p>
+  </header>
 
-    <label for="search-input">Search products:</label>
-    <input id="search-input" class="js-search" type="text" placeholder="Give your search term">
+  <!-- Controls (search + sort) -->
+  <section class="controls" aria-label="Search and sort products">
+    <!-- Search (semantic form for accessibility) -->
+    <form id="search-form" role="search" onsubmit="return false;" aria-label="Search products">
+      <label for="search-input" class="visually-hidden">Search products</label>
+      <input id="search-input" type="search" placeholder="Search products…" aria-label="Search products" autocomplete="off" />
+    </form>
 
-    <label for="ordering">Sort products bij:</label>
-    <select name="ordering" id="ordering" class="js-selector">
-        <option value="Category">Category</option>
-        <option value="Price_Low-High">Price Low-High</option>
-        <option value="Price_High-Low">Price High-Low</option>
-        <option value="A-Z">A-Z</option>
-        <option value="Z-A">Z_A</option>
-    </select>
-    <button class="o-button c-sort-button" onclick=sortProducts()>Sort</button>
-    <div class="c-products u-grid-column-2-bp2">
-        {% if sorting_system == "category" %}
-            <!-- <script>console.log("Test");</script>
-            <script>console.log("{{ sorted_system }}");</script> -->
-            {% for key, value in products.items() %}
-                <h2>{{ key }}</h2>
-                {% for product in value %}
-                    <div class="c-product js-product" data-id="{{ product.productid }}" data-name="{{product.productname}}" onclick=navigateToProduct(this.dataset.id)>
-                        <p>{{ product.productname }}</p>
-                        <p>${{ product.price }}</p>
-                        <p>{{ product.unit }}</p>
-                    </div>
-                {% endfor %}
-            {% endfor %}
-        {% elif products %}
-            {% for product in products %}
-                <div class="c-product js-product" data-id="{{ product.productid }}" data-name="{{product.productname}}">
-                    <p>{{ product.productname }}</p>
-                    <p>${{ product.price }}</p>
-                    <p>{{ product.unit }}</p>
-                </div>
-            {% endfor %}
-        {% else %}
-            <h1>No products found</h1>
-        {% endif %}
+    <!-- Sorting -->
+    <div class="control-field" aria-hidden="false">
+      <label for="ordering" class="visually-hidden">Sort products by</label>
+      <select id="ordering" aria-label="Sort products">
+        <option value="" selected disabled hidden>Select Sorting system</option>
+        <option value="category">Category</option>
+        <option value="price_asc">Price: Low → High</option>
+        <option value="price_desc">Price: High → Low</option>
+        <option value="name_asc">Name: A → Z</option>
+        <option value="name_desc">Name: Z → A</option>
+      </select>
     </div>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script>
-        const socket = io();
-        socket.on("log", data => console.log(data.msg));
-        
-        const products = Array.from(document.getElementsByClassName("js-product"));
-        const searchInput = document.querySelector(".js-search");
-        
-        searchInput.addEventListener("input", (event) => { 
-            // console.log(event.target.value);
-            const searchTerm = event.target.value.toLowerCase(); 
-            products.forEach(product => { 
-                const name = product.dataset.name.toLowerCase(); 
-                product.style.display = name.includes(searchTerm) ? "block" : "none"; 
-            }); 
+
+    <!-- Sort button triggers a backend-aware redirect -->
+    <div>
+      <button class="sort-btn" id="sort-button" aria-label="Apply sorting">Sort</button>
+    </div>
+  </section>
+
+  <!-- Live results count for screen readers -->
+  <div aria-live="polite" aria-atomic="true" id="results-count" class="visually-hidden"></div>
+
+  <!-- Product grid -->
+  <main id="main" role="main">
+    <section id="products-grid" class="products-grid" aria-label="Products">
+      <!--
+        Example templating placeholder — adapt to your templating engine (Jinja shown)
+        If using server-side rendering, loop through `products` and output product cards.
+      -->
+
+      <!-- Jinja example (server side) -->
+      {% if sorting_system == "category" %}
+        {% for key, value in products.items() %}
+          <h2 style="grid-column:1/-1;margin:.25rem 0 .5rem;color:var(--muted);font-size:.95rem">{{ key }}</h2>
+          {% for product in value %}
+            <article class="product js-product" tabindex="0"
+                    data-id="{{ product.productid }}"
+                    data-supllier="{{ product.supplierid }}"
+                    data-category="{{ product.categoryid }}"
+                    data-name="{{ product.productname|default('') }}"
+                    data-price="{{ product.price|default(0) }}">
+              <p class="title">{{ product.productname }}</p>
+              <p class="meta">{{ product.unit }}</p>
+              <p class="price">${{ '%.2f'|format(product.price) }}</p>
+            </article>
+          {% endfor %}
+        {% endfor %}
+      {% elif products %}
+        {% for product in products %}
+          <article class="product js-product" tabindex="0"
+                data-id="{{ product.productid }}"
+                data-supllier="{{ product.supplierid }}"
+                data-category="{{ product.categoryid }}"
+                data-name="{{ product.productname|default('') }}"
+                data-price="{{ product.price|default(0) }}">
+            <p class="title">{{ product.productname }}</p>
+            <p class="meta">{{ product.unit }}</p>
+            <p class="price">${{ '%.2f'|format(product.price) }}</p>
+          </article>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state" id="empty-state-message">
+          No products available.
+        </div>
+      {% endif %}
+    </section>
+
+    <!-- Empty-state that JS can toggle (kept outside the templating conditional to be robust) -->
+    <div id="empty-state-js" class="empty-state" style="display:none">No products found.</div>
+  </main>
+
+  <!-- Scripts -->
+  <script>
+    (function(){
+      // DOM references
+      const searchInput = document.getElementById('search-input');
+      const ordering = document.getElementById('ordering');
+      const sortButton = document.getElementById('sort-button');
+      const productsGrid = document.getElementById('products-grid');
+      const resultsCount = document.getElementById('results-count');
+      const emptyStateJs = document.getElementById('empty-state-js');
+
+      // Collect product nodes (live NodeList converted to array)
+      function getProductNodes(){
+        return Array.from(document.querySelectorAll('.js-product'));
+      }
+
+      // Normalize string for searching
+      function normalize(str){
+        return (str || '').toString().trim().toLowerCase();
+      }
+
+      // Update visible state based on search term
+      function filterProductsBySearch(term){
+        const nodes = getProductNodes();
+        const t = normalize(term);
+        let visible = 0;
+        nodes.forEach(node => {
+          const name = normalize(node.dataset.name);
+          const match = name.includes(t);
+          node.style.display = match ? '' : 'none';
+          if(match) visible++;
         });
-        
-        function navigateToProduct(product_id) {
-            console.log("test");
-            console.log(product_id);
+        // Update live region & empty-state
+        resultsCount.textContent = visible + ' product' + (visible === 1 ? '' : 's') + ' visible';
+        emptyStateJs.style.display = visible === 0 ? '' : 'none';
+      }
+
+      // Keyboard accessibility: Enter on product -> navigate
+      function bindProductInteractions(){
+        getProductNodes().forEach(node => {
+          node.addEventListener('click', () => navigateToProduct(node.dataset.id, node.dataset.supllier, node.dataset.category));
+          node.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter' || e.key === ' '){
+              e.preventDefault();
+              navigateToProduct(node.dataset.id, node.dataset.supllier, node.dataset.category);
+            }
+          });
+        });
+      }
+
+      // Navigation stub - adapt to real routing in your app
+      function navigateToProduct(id, supplier, category){
+        if(!id) return;
+        // Example: client-side route (or server route)
+        // window.location.href = '/product/' + encodeURIComponent(id);
+        // We choose a query param path to match earlier examples:
+        window.location.href = '/product?id=' + encodeURIComponent(id) + '&supplierid=' + encodeURIComponent(supplier) + '&categoryid=' + encodeURIComponent(category);
+      }
+
+      // Sorting: send user to backend with sorting param
+      function applySorting(){
+        const val = ordering.value;
+        if(val == "") {
+          window.location.href = '/';
+          return
         };
+        // Map to expected server query param values if needed
+        window.location.href = '/?sorting_system=' + encodeURIComponent(val);
+      }
 
-        function sortProducts() {
-            const selector = document.getElementById("ordering");
-            const selectedValue = selector.options[selector.selectedIndex].value;
-            window.location.href = "/?sorting_system=" + selectedValue;
-        };
+      // Event listeners
+      searchInput.addEventListener('input', (e) => {
+        filterProductsBySearch(e.target.value);
+      });
 
+      sortButton.addEventListener('click', applySorting);
+      ordering.addEventListener('change', () => {
+        // Optionally auto-apply sorting when selection changes:
+        // applySorting();
+      });
 
-    </script>
+      // Initial bindings
+      bindProductInteractions();
+
+      // Run an initial filter pass to set state and live region
+      filterProductsBySearch(searchInput.value || '');
+      
+    })();
+  </script>
 </body>
 </html>

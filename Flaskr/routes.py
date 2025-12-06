@@ -42,14 +42,13 @@ def place_order(product_id, quantity):
         socketio.emit('order_failed', {'productid': product_id})
         return "Order failed"
 
-
 @main.route('/', methods=['GET'])
 def index():
     products = Products.query.all()
     sorting_system = request.args.get('sorting_system')
     # print("************************** sorting system: ", sorting_system)
     if sorting_system is None:
-        return render_template('test_code.html', products=products, sorting_system=sorting_system)
+        return render_template('index.html', products=products, sorting_system=sorting_system)
         # sorting_system = "Category"
     # print("************************** sorting system: ", sorting_system)
 
@@ -68,16 +67,12 @@ def index():
             sorted_products = sorted(products, key=lambda p: p.productname, reverse=True)
         if sorted_products is not None:
             # print(sorted_products)
-            return render_template('test_code.html', products=sorted_products, sorting_system=sorting_system)
-        return render_template('test_code.html', products=products, sorting_system=sorting_system)
-    return render_template('test_code.html', products=None)
-            # return render_template('index.html', products=sorted_products, sorting_system=sorting_system)
-        # return render_template('index.html', products=products, sorting_system=sorting_system)
-    # return render_template('index.html', products=None)
-
+            return render_template('index.html', products=sorted_products, sorting_system=sorting_system)
+        return render_template('index.html', products=products, sorting_system=sorting_system)
+    return render_template('index.html', products=None)
 
 # @main.route('/product/<productId>', methods=['GET'])
-@main.route('/product', methods=['GET'])
+@main.route('/product', methods=['GET', 'POST'])
 def product(product_id=None):
     # try:
     #     product_id = request.args.get('id')
@@ -86,8 +81,6 @@ def product(product_id=None):
     product_id = request.args.get('id')
     supplier_id = request.args.get('supplierid')
     category_id = request.args.get('categoryid')
-    # print("overview")
-    # print(product_id, supplier_id, category_id)
     
     if product_id is None or supplier_id is None or category_id is None:
         return render_template('product.html', product=None)
@@ -95,8 +88,21 @@ def product(product_id=None):
     supplier_info = Suppliers.query.get(int(supplier_id))
     category_info = Categories.query.get(int(category_id))
     print("product info: ", product_info)
-    # return render_template('product.html', product=product_id)
     return render_template('product.html', product=product_info, supplier = supplier_info, category = category_info)
+
+
+@main.route('/supplier', methods=['GET', 'POST'])
+def supplier(supplier_id=None):
+    supplier_id = request.args.get('id')
+    # make funtion to return to previous page and give error message as popup
+    if supplier_id is None:
+        return render_template('supplier.html', supplier=None)
+    
+    supplier_info = Suppliers.query.get(int(supplier_id))
+    supplier_products = Products.query.filter_by(supplierid=supplier_id).all()
+    print("supplier info: ", supplier_info)
+    print(supplier_info.longitude, supplier_info.latitude)
+    return render_template('supplier.html', supplier=supplier_info, products=supplier_products)
 
 # Test database and check connection
 @main.route('/database/', methods=['GET'])

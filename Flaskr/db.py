@@ -57,6 +57,8 @@ class Suppliers(db.Model):
     city = db.Column(db.String(100), primary_key=False)
     postalcode = db.Column(db.String(100), primary_key=False)
     country = db.Column(db.String(100), primary_key=False)
+    latitude = db.Column(db.Float, primary_key=False)
+    longitude = db.Column(db.Float, primary_key=False)
     
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

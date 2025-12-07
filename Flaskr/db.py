@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 db = SQLAlchemy()
 
@@ -37,7 +38,7 @@ class Categories(db.Model):
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-class Customers(db.Model):
+class Customers(UserMixin, db.Model):
     customerid = db.Column(db.Integer, primary_key=True)
     customername = db.Column(db.String(100), primary_key=False)
     contactname = db.Column(db.String(100), primary_key=False)
@@ -45,9 +46,13 @@ class Customers(db.Model):
     city = db.Column(db.String(100), primary_key=False)
     postalcode = db.Column(db.String(100), primary_key=False)
     country = db.Column(db.String(100), primary_key=False)
+    password = db.Column(db.String(100), primary_key=False)
     
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    
+    def get_id(self):
+        return self.customerid
     
 class Suppliers(db.Model):
     supplierid = db.Column(db.Integer, primary_key=True)

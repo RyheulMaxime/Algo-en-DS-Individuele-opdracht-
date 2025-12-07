@@ -7,6 +7,8 @@ from sqlalchemy import inspect
 from flask_socketio import SocketIO
 
 from .db import db
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+
 
 # Voor logging in python debugger "Server Side":
 # dictConfig({
@@ -26,6 +28,7 @@ from .db import db
 # })
 
 socketio = SocketIO()
+login_manager = LoginManager()
 
 def create_app():
     # create and configure the app
@@ -37,6 +40,9 @@ def create_app():
     app.config.from_object(Config)
     db.init_app(app)
 
+    # login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = "login"
 
     # Chack If DB needs to be created
     # with app.app_context():
@@ -55,7 +61,6 @@ def create_app():
     from .routes import main
     app.register_blueprint(main)
 
-    print("test")
     socketio.init_app(app, logger=True, engineio_logger=True, cors_allowed_origins="*")
     
     

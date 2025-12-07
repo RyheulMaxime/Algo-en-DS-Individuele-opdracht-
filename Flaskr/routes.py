@@ -3,8 +3,9 @@ from .db import *
 from logging.config import dictConfig
 from flask import current_app
 from flask_socketio import emit # <-- Only import emit
-from . import socketio   # import socketio from the app package
-
+from . import socketio, login_manager   # import socketio from the app package
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 main = Blueprint('main', __name__)
 
@@ -41,6 +42,12 @@ def place_order(product_id, quantity):
     else:
         socketio.emit('order_failed', {'productid': product_id})
         return "Order failed"
+
+# Account user functions
+# Load user for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    return Customers.query.get(int(user_id))
 
 @main.route('/', methods=['GET'])
 def index():
@@ -90,7 +97,6 @@ def product(product_id=None):
     print("product info: ", product_info)
     return render_template('product.html', product=product_info, supplier = supplier_info, category = category_info)
 
-
 @main.route('/supplier', methods=['GET', 'POST'])
 def supplier(supplier_id=None):
     supplier_id = request.args.get('id')
@@ -103,6 +109,72 @@ def supplier(supplier_id=None):
     print("supplier info: ", supplier_info)
     print(supplier_info.longitude, supplier_info.latitude)
     return render_template('supplier.html', supplier=supplier_info, products=supplier_products)
+
+# Register route
+@main.route('/register', methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        customer_info = {"username": None, "password": None, "contact_name": None, "address": None, "city": None, "postal_code": None, "country": None}
+
+        for key, value in customer_info.items():
+            info = request.form.get(key)
+            if info is None:
+                pass
+            elif info == "":
+                customer_info[key] = None
+            else:
+                customer_info[key] = info
+        # print(customer_info)
+
+        if Customers.query.filter_by(customername=customer_info['username']).first():
+            return render_template("sign_up.html", error="Username already taken!")
+        
+        customer_id = Customers.query.order_by(Customers.customerid.desc()).first().customerid + 1
+        if customer_info['password'] is not None:
+            hashed_password = generate_password_hash(customer_info['password'], method="pbkdf2:sha256")
+            new_user = Customers(customerid=customer_id, customername=customer_info['username'], contactname=customer_info['contact_name'], address=customer_info['address'], city=customer_info['city'], postalcode=customer_info['postal_code'], country=customer_info['country'], password=hashed_password)
+        else:
+            new_user = Customers(customerid=customer_id, customername=customer_info['username'], contactname=customer_info['contact_name'], address=customer_info['address'], city=customer_info['city'], postalcode=customer_info['postal_code'], country=customer_info['country'], password=customer_info['password'])
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        return redirect(url_for("main.login"))
+    
+    return render_template("sign_up.html")
+
+# Login route
+@main.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        customer = Customers.query.filter_by(customername=username).first()
+
+        if password == '':
+            password = None
+
+        if customer and password == customer.password:
+            login_user(customer)
+            print("user logged in without password")    
+        elif customer and check_password_hash(customer.password, password):
+            login_user(customer)
+            print("user logged in")
+            return redirect(url_for("dashboard"))
+        else:
+            print("user not logged in")
+            return render_template("login.html", error="Invalid username or password")
+
+    return render_template("login.html")
+
+# Logout route
+@main.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
+
 
 # Test database and check connection
 @main.route('/database/', methods=['GET'])
@@ -149,9 +221,10 @@ def handle_message(data):
 
 @socketio.on('order')
 def handle_message(data):
-    # print('received order: ')
-    # print(data)
-    # print(quantity)
+    
     place_order(data['productid'], data['quantity'])
 
-
+@socketio.on('Login')
+def handle_message(data):
+    
+    place_order(data['productid'], data['quantity'])

@@ -76,13 +76,13 @@ def index():
 @main.route('/product', methods=['GET', 'POST'])
 # @main.route('/product', methods=['GET', 'POST'])
 def product(product_id=None):
-    
+    user = None
+    if current_user.is_authenticated:
+        user = current_user
     product_id = request.args.get('id')
     supplier_id = request.args.get('supplierid')
     category_id = request.args.get('categoryid')
     
-    if current_user.is_authenticated:
-        user = current_user
 
     if request.method == "POST":
         quantity = request.form.get('quantity')

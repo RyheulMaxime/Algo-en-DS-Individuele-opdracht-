@@ -1,242 +1,246 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AL&DS Shop — Customer Profile</title>
-  <meta name="description" content="AL&DS Shop — premium, responsive product listing" />
-  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AL&DS Shop — Customer Profile</title>
+    <meta name="description" content="Manage your account and view order history." />
+    
+    <link rel="icon" sizes="16x16" href="../static/favicon/favicon-16x16.png">
+    <link rel="icon" sizes="32x32" href="../static/favicon/favicon-32x32.png">
 
-  <style>
-    :root{
-      --bg:#f5f6f7;
-      --muted:#777;
-      --text:#121214;
-      --surface:#ffffff;
-      --brand-1:#5337ff;
-      --brand-2:#3116c1;
-      --card-radius:16px;
-      --space-sm:0.5rem;
-      --space-md:1rem;
-      --space-lg:1.5rem;
-      --max-width:1100px;
-      --focus: 3px solid rgba(83,55,255,0.16);
-      --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
-      --shadow-lg: 0 4px 20px rgba(0,0,0,0.12);
-    }
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:var(--bg);
-      color:var(--text);
-      line-height:1.35;
-    }
-
-    /* Header */
-    header.site-header{
-      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
-      color: #fff;
-      padding: clamp(1.25rem, 3vw, 2.5rem);
-      text-align:center;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-    }
-    header .brand {
-      margin:0;
-      font-weight:700;
-      letter-spacing:0.6px;
-      font-size: clamp(1.25rem, 2.4vw, 2.2rem);
-      color: #fff;
-      text-decoration: none;
-      display: inline-block;
-    }
-    header .tagline { margin: .35rem 0 0; font-weight:500; color: rgba(255,255,255,0.92); opacity:0.95; font-size: .95rem; }
-
-    .header-actions { position: absolute; right: 1rem; top: 1rem; display:flex; gap:.5rem; align-items:center; }
-    .dropbtn { background-color: transparent; color: white; padding: .5rem .8rem; font-size: 0.95rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; cursor: pointer; }
-    .dropdown { position: relative; }
-    .dropdown-content { display:none; position:absolute; right:0; background-color:#fff; color:#111; min-width:160px; box-shadow: 0 8px 24px rgba(2,6,23,0.12); border-radius: 10px; overflow: hidden; z-index: 30; }
-    .dropdown-content a, .dropdown-content button { display:block; width:100%; padding: .6rem 1rem; border: none; background: none; text-align:left; color: inherit; font-size: .95rem; cursor: pointer; }
-    .dropdown-content a:hover, .dropdown-content button:hover { background: #f3f4f6; }
-    .dropdown.open .dropdown-content{ display:block; }
-
-    /* Customer profile layout */
-    main.profile-container { max-width: var(--max-width); margin: 2rem auto; padding: 0 1rem; }
-    h1,h2 { margin-top:1rem; }
-    .info-block { background: var(--surface); padding: 1.2rem; border-radius: var(--card-radius); box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
-    .info-block p { margin: 0.25rem 0; }
-
-    /* Buttons */
-    .btn { padding:.6rem .85rem; border-radius:8px; border:0; cursor:pointer; font-weight:600; margin-right:.5rem; }
-    .btn.primary { background: linear-gradient(180deg,var(--brand-1),var(--brand-2)); color:#fff; }
-    .btn.ghost { background: #f3f4f6; color: #111; }
-
-    /* Modals */
-    .overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); z-index: 60; padding: 1rem; }
-    .overlay.open { display:flex; }
-    .modal { background: white; border-radius: 12px; padding: 1.25rem; max-width: 420px; width: 100%; box-shadow: 0 10px 30px rgba(2,6,23,0.18); }
-    .modal h2{ margin:0 0 .5rem; }
-    .modal p{ margin:.25rem 0; color:var(--muted); }
-    .modal .actions { margin-top:1rem; display:flex; gap:.5rem; justify-content:flex-end; }
-    .visually-hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; border:0; padding:0; margin:-1px; }
-  
-    .order-card {
-        background: var(--surface);
-        padding: 1rem;
-        border-radius: var(--card-radius);
-        box-shadow: var(--shadow-sm);
-        margin-bottom: 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-    .order-card p { margin: 0; }
-    .order-card button { align-self: flex-start; margin-top: 0.5rem; }
-  </style>
+    <link rel="stylesheet" href="../static/style.css">
 </head>
+
 <body>
-  <!-- Header -->
+
   <header class="site-header" role="banner">
-    <a class="brand" href="/" aria-label="Go to homepage">AL&amp;DS Shop</a>
-    <p class="tagline">Curated products — clean design, delightful shopping</p>
-    <div class="header-actions" aria-hidden="false">
-      <div id="user-dropdown" class="dropdown" aria-haspopup="true">
+    <a class="site-header__brand" href="/" aria-label="Go to homepage">AL&amp;DS Shop</a>
+    <p class="site-header__tagline">Curated products — clean design, delightful shopping</p>
+    
+    <div class="user-menu" aria-hidden="false">
+      <div id="user-dropdown" class="user-menu__dropdown" aria-haspopup="true">
         {% if customer %}
-          <button id="user-button" class="dropbtn" aria-expanded="false">{{ customer.customername }}</button>
-          <div class="dropdown-content" role="menu" aria-label="User menu">
-            <a role="menuitem" href="/customer">Customer Profile</a>
-            <a role="menuitem" href="/logout">Logout</a>
+          <button id="user-button" class="user-menu__trigger" aria-expanded="false">
+            {{ customer.customername }}
+          </button>
+          <div class="user-menu__content" role="menu" aria-label="User menu">
+            <a role="menuitem" class="user-menu__link" href="/customer">Customer Profile</a>
+            <a role="menuitem" class="user-menu__link" href="/logout">Logout</a>
           </div>
         {% else %}
-          <button id="user-button" class="dropbtn" aria-expanded="false">Account</button>
-          <div class="dropdown-content" role="menu" aria-label="Account menu">
-            <a role="menuitem" href="/login">Login</a>
-            <a role="menuitem" href="/register">Register</a>
+          <button id="user-button" class="user-menu__trigger" aria-expanded="false">Account</button>
+          <div class="user-menu__content" role="menu" aria-label="Account menu">
+            <a role="menuitem" class="user-menu__link" href="/login">Login</a>
+            <a role="menuitem" class="user-menu__link" href="/register">Register</a>
           </div>
         {% endif %}
       </div>
     </div>
   </header>
 
-  <!-- Customer Profile -->
-  {% if customer %}
-  <main class="profile-container">
-    <h1>Logged in as {{ customer.customername }}</h1>
+  <main class="profile-layout" role="main">
+    {% if customer %}
+      <h1>Welcome back, {{ customer.customername }}</h1>
 
-    <div class="info-block">
-      <h2>Customer Info</h2>
-      <p>Name: {{ customer.customername }}</p>
-      <p>Contact: {{ customer.contactname }}</p>
-      <p>Address: {{ customer.address }}</p>
-      <p>Postal Code: {{ customer.postalcode }}</p>
-      <p>City: {{ customer.city }}</p>
-      <p>Country: {{ customer.country }}</p>
-      <button class="btn primary" id="edit-info-btn">Edit Info</button>
-      <button class="btn ghost" id="change-password-btn">Change Password</button>
-    </div>
-
-   {% if orders %}
-        <div class="info-block">
-        <h2>Orders</h2>
-        {% for key, value in orders.items() %}
-            <div class="order-card" id="order-{{ key }}" data-orderid="{{ key }}" data-productid="{{ value.productid }}">
-                <p><strong>Product:</strong> {{ value.productname }}</p>
-                <p><strong>Unit Price:</strong> {{ value.unitprice }}</p>
-                <p><strong>Quantity:</strong> {{ value.quantity }}</p>
-                <p><strong>Order Placed on:</strong> {{ value.createdat }}</p>
-                <form action="/customer/delete/{{ key }}" method="POST" style="display:inline;">
-                    <button type="submit" class="btn ghost delete-order">Delete</button>
-                </form>
-            </div>
-        {% endfor %}
+      <section class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+          <h2 style="margin:0; font-size:1.5rem;">Account Details</h2>
         </div>
-        {% endif %}
+        
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Full Name</span>
+            <span class="info-value">{{ customer.customername }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Contact</span>
+            <span class="info-value">{{ customer.contactname }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Address</span>
+            <span class="info-value">{{ customer.address }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">City/Zip</span>
+            <span class="info-value">{{ customer.postalcode }} {{ customer.city }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Country</span>
+            <span class="info-value">{{ customer.country }}</span>
+          </div>
+        </div>
+
+        <div class="modal__actions" style="justify-content: flex-start; margin-top: 1.5rem;">
+          <button class="btn btn--primary" id="btn-edit-info">Edit Profile</button>
+          <button class="btn btn--ghost" id="btn-change-password">Change Password</button>
+        </div>
+      </section>
+
+      {% if orders %}
+        <section class="card" style="margin-top: 2rem;">
+          <h2 style="margin-top:0; margin-bottom:1rem; font-size:1.5rem;">Order History</h2>
+          
+          <div class="orders-list">
+            {% for key, value in orders.items() %}
+              <div class="order-item" id="order-{{ key }}">
+                <div class="order-details">
+                  <strong>{{ value.productname }}</strong>
+                  <div class="product-card__meta">
+                    Qty: {{ value.quantity }} &bull; Price: {{ value.unitprice }}
+                  </div>
+                  <div class="product-card__meta">
+                    Placed on: {{ value.createdat }}
+                  </div>
+                </div>
+                
+                <div class="order-actions">
+                  <form action="/customer/delete/{{ key }}" method="POST">
+                    <button type="submit" class="btn btn--ghost" aria-label="Cancel order for {{ value.productname }}">
+                      Cancel Order
+                    </button>
+                  </form>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+
+    {% else %}
+      <div class="card" style="text-align:center; padding:3rem;">
+        <h1>Not logged in</h1>
+        <p>Please log in to view your profile.</p>
+        <a href="/login" class="btn btn--primary">Go to Login</a>
+      </div>
+    {% endif %}
   </main>
 
-  <!-- Edit Info Modal -->
-  <div id="edit-info-overlay" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div id="modal-edit-info" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal">
-      <h2>Edit Customer Info</h2>
+      <h2 class="modal__header">Edit Profile</h2>
       <form action="/customer/edit" method="post">
-        <label for="new_name">Name</label>
-        <input type="text" name="new_name" required value="{{ customer.customername }}"/>
-        <label for="new_contact">Contact</label>
-        <input type="text" name="new_contact" value="{{ customer.contactname }}"/>
-        <label for="new_address">Address</label>
-        <input type="text" name="new_address" value="{{ customer.address }}"/>
-        <label for="new_postalcode">Postal Code</label>
-        <input type="text" name="new_postalcode" value="{{ customer.postalcode }}"/>
-        <label for="new_city">City</label>
-        <input type="text" name="new_city" value="{{ customer.city }}" />
-        <label for="new_country">Country</label>
-        <input type="text" name="new_country" value="{{ customer.country }}" />
-        <div class="actions">
-          <button type="button" class="btn ghost" id="edit-info-cancel">Cancel</button>
-          <button type="submit" class="btn primary">Save</button>
+        <div class="form-group">
+          <label class="form-label" for="new_name">Name</label>
+          <input class="form-input" type="text" id="new_name" name="new_name" required value="{{ customer.customername }}"/>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="new_contact">Contact</label>
+          <input class="form-input" type="text" id="new_contact" name="new_contact" value="{{ customer.contactname }}"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="new_address">Address</label>
+          <input class="form-input" type="text" id="new_address" name="new_address" value="{{ customer.address }}"/>
+        </div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+          <div class="form-group">
+            <label class="form-label" for="new_postalcode">Postal Code</label>
+            <input class="form-input" type="text" id="new_postalcode" name="new_postalcode" value="{{ customer.postalcode }}"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new_city">City</label>
+            <input class="form-input" type="text" id="new_city" name="new_city" value="{{ customer.city }}" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="new_country">Country</label>
+          <input class="form-input" type="text" id="new_country" name="new_country" value="{{ customer.country }}" />
+        </div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" id="cancel-edit-info">Cancel</button>
+          <button type="submit" class="btn btn--primary">Save Changes</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Change Password Modal -->
-  <div id="change-password-overlay" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div id="modal-change-password" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal">
-      <h2>Change Password</h2>
+      <h2 class="modal__header">Change Password</h2>
       <form action="/customer/reset" method="post">
-        <label for="previous_password">Previous Password</label>
-        <input type="password" name="previous_password"/>
-        <label for="new_password">New Password</label>
-        <input type="password" name="new_password"/>
-        <div class="actions">
-          <button type="button" class="btn ghost" id="change-password-cancel">Cancel</button>
-          <button type="submit" class="btn primary">Change</button>
+        <div class="form-group">
+          <label class="form-label" for="previous_password">Current Password</label>
+          <input class="form-input" type="password" id="previous_password" name="previous_password" />
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="new_password">New Password</label>
+          <input class="form-input" type="password" id="new_password" name="new_password"/>
+        </div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" id="cancel-change-password">Cancel</button>
+          <button type="submit" class="btn btn--primary">Update Password</button>
         </div>
       </form>
     </div>
   </div>
-  {% else %}
-  <main class="profile-container">
-    <h1>Not logged in</h1>
-  </main>
-  {% endif %}
 
   <script>
-    // Dropdown toggle
-    const userDropdown = document.getElementById('user-dropdown');
-    const userButton = document.getElementById('user-button');
-    if(userButton && userDropdown){
-      userButton.addEventListener('click', ()=>{
-        userDropdown.classList.toggle('open');
-        const expanded = userButton.getAttribute('aria-expanded') === 'true';
-        userButton.setAttribute('aria-expanded', String(!expanded));
-      });
-      document.addEventListener('click', (e)=>{
-        if(!userDropdown.contains(e.target)){
-          userDropdown.classList.remove('open');
-          userButton.setAttribute('aria-expanded','false');
+    (function(){
+      'use strict';
+
+      // --- Dropdown Logic ---
+      const dropdown = document.getElementById('user-dropdown');
+      const dropdownBtn = document.getElementById('user-button');
+      
+      if (dropdownBtn && dropdown) {
+        dropdownBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdown.classList.toggle('is-open');
+          const expanded = dropdownBtn.getAttribute('aria-expanded') === 'true';
+          dropdownBtn.setAttribute('aria-expanded', String(!expanded));
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('is-open');
+            dropdownBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // --- Modal Logic ---
+      const els = {
+        editBtn: document.getElementById('btn-edit-info'),
+        passBtn: document.getElementById('btn-change-password'),
+        editModal: document.getElementById('modal-edit-info'),
+        passModal: document.getElementById('modal-change-password'),
+        editCancel: document.getElementById('cancel-edit-info'),
+        passCancel: document.getElementById('cancel-change-password')
+      };
+
+      function toggleModal(modal, isOpen) {
+        if (!modal) return;
+        if (isOpen) {
+          modal.classList.add('is-open'); // Using is-open to match styles.css
+          modal.setAttribute('aria-hidden', 'false');
+          const firstInput = modal.querySelector('input');
+          if (firstInput) firstInput.focus();
+        } else {
+          modal.classList.remove('is-open');
+          modal.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      if (els.editBtn) els.editBtn.addEventListener('click', () => toggleModal(els.editModal, true));
+      if (els.passBtn) els.passBtn.addEventListener('click', () => toggleModal(els.passModal, true));
+      
+      if (els.editCancel) els.editCancel.addEventListener('click', () => toggleModal(els.editModal, false));
+      if (els.passCancel) els.passCancel.addEventListener('click', () => toggleModal(els.passModal, false));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          toggleModal(els.editModal, false);
+          toggleModal(els.passModal, false);
         }
       });
-    }
-
-    // Modals
-    const editInfoBtn = document.getElementById('edit-info-btn');
-    const changePasswordBtn = document.getElementById('change-password-btn');
-    const editInfoOverlay = document.getElementById('edit-info-overlay');
-    const changePasswordOverlay = document.getElementById('change-password-overlay');
-    const editInfoCancel = document.getElementById('edit-info-cancel');
-    const changePasswordCancel = document.getElementById('change-password-cancel');
-
-    function openModal(el){ if(el){ el.classList.add('open'); el.setAttribute('aria-hidden','false'); } }
-    function closeModal(el){ if(el){ el.classList.remove('open'); el.setAttribute('aria-hidden','true'); } }
-
-    if(editInfoBtn) editInfoBtn.addEventListener('click', ()=>openModal(editInfoOverlay));
-    if(changePasswordBtn) changePasswordBtn.addEventListener('click', ()=>openModal(changePasswordOverlay));
-    if(editInfoCancel) editInfoCancel.addEventListener('click', ()=>closeModal(editInfoOverlay));
-    if(changePasswordCancel) changePasswordCancel.addEventListener('click', ()=>closeModal(changePasswordOverlay));
-    document.addEventListener('keydown',(e)=>{
-      if(e.key==='Escape'){ closeModal(editInfoOverlay); closeModal(changePasswordOverlay);}
-    });
+    })();
   </script>
 </body>
 </html>

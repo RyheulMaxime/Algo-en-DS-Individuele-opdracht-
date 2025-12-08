@@ -1,680 +1,492 @@
-/*------------------------------------*\
-#FONTS
-\*------------------------------------*/
-
-/*------------------------------------*\
-#Variables
-\*------------------------------------*/
-
+/* ==========================================================================
+   1. DESIGN TOKENS (Variables)
+   ========================================================================== */
 :root {
-    /* colors */
-    --global-color-alpha-dark: #1A4A1C;
-    --global-color-alpha: #29742C;
+  /* --- Palette --- */
+  --color-bg: #f5f6f7;
+  --color-surface: #ffffff;
+  
+  /* Text */
+  --color-text-main: #121214;
+  --color-text-muted: #777777;
+  --color-text-inverse: #ffffff;
 
-    --global-color-neutral-xxxx-light: #F0F0F7;
-    --global-color-neutral-xxx-light: #EBEBF2;
-    --global-color-neutral-xx-light: #D7DAE2;
-    --global-color-neutral-x-light: #BCBCCB;
-    --global-color-neutral-light: #A5A4BF;
-    --global-color-neutral: #808495;
-    --global-color-neutral-dark: #4D4F5C;
-    --global-color-neutral-x-dark: #43425D;
-    --global-color-neutral-xx-dark: #3B3B53;
+  /* Brand */
+  --color-brand-primary: #5337ff;
+  --color-brand-secondary: #3116c1;
+  --color-focus: rgba(83, 55, 255, 0.16);
+  --color-border: #dddddd;
 
-    --global-color-button-corect:#20D428;
-    --global-color-button-corect-light:#12FF12;
-    
-    --global-color-button-wrong:#D12721;
-    --global-color-button-wrong-light:#EB160E;
+  /* Feedback */
+  --color-error-bg: #fdecea;
+  --color-error-text: #d9534f;
 
-    /* Shadows */
-    --global-input-focus-boxShadow: 0 2px 3px var(--global-color-neutral-x-light);
+  /* --- Spacing & Sizing --- */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --layout-max-width: 1100px;
+  --header-padding: clamp(1.25rem, 3vw, 2.5rem);
 
-    /* border */
-    --global-borderWidth: 2px;
-    --global-borderRadius:8px;
+  /* --- UI Elements --- */
+  --radius-card: 16px;
+  --radius-input: 12px;
+  --radius-btn: 10px;
 
-    /* transitions */
-    --global-transitionTiming-alpha: .1s ease-out;
-
-    /* Whitespace */
-    --global-baseline: 1rem/2;  /* 8px */
-    --global-whitespace-xs: var(--global-baseline); /* 16px */
-    --global-whitespace-sm: calc(var(--global-baseline) * 2); /* 16px */
-    --global-whitespace-md: calc(var(--global-baseline) * 3); /* 24px */
-    --global-whitespace-lg: calc(var(--global-baseline) * 4); /* 32px */
-    --global-whitespace-xl: calc(var(--global-baseline) * 5); /* 40px */
-    --global-whitespace-xxl: calc(var(--global-baseline) * 6); /* 48px */
+  /* --- Elevation --- */
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.12);
+  --shadow-dropdown: 0 8px 24px rgba(2, 6, 23, 0.12);
 }
 
-/*------------------------------------*\
-#GENERIC
-\*------------------------------------*/
-
-/*
-    Generic: Page
-    ---
-    Global page styles + universal box-sizing:
-*/
-
-html {
-    font-size: 100%;
-    line-height: 1.5;
-    font-family: "source-sans-pro", Helvetica, arial, sans-serif;
-    /* color: var(--global-color-neutral-xxxx-light); */
-    /* background-color: var(--global-color-alpha); */
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    height: 100%;
-
+/* ==========================================================================
+   2. RESET & BASE STYLES
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-*,
-*:before,
-*:after {
-    box-sizing: inherit;
+html, body {
+  height: 100%;
 }
 
-/*
-* Remove text-shadow in selection highlight:
-* https://twitter.com/miketaylr/status/12228805301
-*
-* Customize the background color to match your design.
-*/
-
-::-moz-selection {
-    background: LightGrey;
-    color: white;
-    text-shadow: none;
-}
-
-::selection {
-    background: black;
-    color: white;
-    text-shadow: none;
-    background: black;
-    color: var(--global-color-alpha);
-}
-
-/*------------------------------------*\
-#Elements
-\*------------------------------------*/
-
-/*
-Elements: Images
----
-Default markup for images to make them responsive
-*/
-
-img {
-    max-width: 100%;
-    vertical-align: top;
-}
-
-/*
-    Elements: typography
-    ---
-    Default markup for typographic elements
-*/
-
-h1,
-h2,
-h3 {
-    font-weight: 700;
-}
-
-h1 {
-    font-size: 2.25rem;
-    line-height: 3rem;
-    margin: 0 0 var(--global-whitespace-md);
-}
-
-h2 {
-    font-size: 2rem;
-    line-height: 2.5rem;
-    margin: 0 0 var(--global-whitespace-md);
-}
-
-h3 {
-    font-size: 1.625rem;
-    line-height: 2rem;
-    margin: 0 0 var(--global-whitespace-md);
-}
-
-h4,
-h5,
-h6 {
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.5rem;
-    margin: 0 0 var(--global-whitespace-md);
-}
-
-p,
-ol,
-ul,
-dl,
-table,
-address,
-figure {
-    margin: 0 0 var(--global-whitespace-md);
-}
-
-ul,
-ol {
-    padding-left: var(--global-whitespace-md);
-}
-
-li ul,
-li ol {
-    margin-bottom: 0;
-}
-
-blockquote {
-    font-style: normal;
-    font-size: 1.4375rem;
-    line-height: 2rem;
-    margin: 0 0 var(--global-whitespace-md);
-}
-
-blockquote * {
-    font-size: inherit;
-    line-height: inherit;
-}
-
-figcaption {
-    font-weight: 400;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    margin-top: var(--global-baseline);
-}
-
-hr {
-    border: 0;
-    height: 1px;
-    background: LightGrey;
-    margin: 0 0 var(--global-whitespace-md);
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-    color: LightGrey;
-    outline-color: LightGrey;
-    outline-width: medium;
-    outline-offset: 2px;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
 }
 
-a:visited,
-a:active {
-    color: var(--color-alpha);
+button, input, select {
+  font-family: inherit;
 }
 
-a:hover,
-a:focus {
-    color: black;
+/* ==========================================================================
+   3. COMPONENT: SITE HEADER
+   ========================================================================== */
+.site-header {
+  position: relative;
+  padding: var(--header-padding);
+  background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-secondary));
+  color: var(--color-text-inverse);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
 }
 
-label,
-input {
-    display: block;
+.site-header__brand {
+  display: inline-block;
+  margin: 0;
+  font-size: clamp(1.25rem, 2.4vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--color-text-inverse);
+}
+.site-header__brand:hover { opacity: 0.9; }
+
+.site-header__tagline {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
 }
 
-select {
-    width: 100%;
+/* User Menu (Dropdown) */
+.user-menu {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-input::placeholder {
-    color: white;
+.user-menu__trigger {
+  padding: 0.5rem 0.8rem;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-btn);
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.user-menu__trigger:hover { background: rgba(255,255,255,0.1); }
+
+.user-menu__dropdown { position: relative; }
+
+.user-menu__content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  min-width: 160px;
+  background-color: #fff;
+  border-radius: var(--radius-btn);
+  box-shadow: var(--shadow-dropdown);
+  overflow: hidden;
+  color: #111;
+  z-index: 100;
 }
 
-/*------------------------------------*\
-#OBJECTS
-\*------------------------------------*/
+.user-menu__dropdown.is-open .user-menu__content { display: block; }
 
-/*
-    Objects: Header
-    ---
-    
-*/
+.user-menu__link {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: var(--color-text-main);
+}
+.user-menu__link:hover { background-color: #f3f4f6; }
 
-o-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--global-whitespace-md) var(--global-whitespace-md) 0;
+/* ==========================================================================
+   4. COMPONENT: CARDS & CONTAINERS
+   ========================================================================== */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/*
-    Objects: Row
-    ---
-    Creates a horizontal row that stretches the viewport and adds padding around children
-*/
-
-.o-row {
-    position: relative;
-    padding: var(--global-whitespace-md) var(--global-whitespace-md) 0;
-    min-height: 100vh;
-    display: flex;
-    /* align-items: center; */
-    justify-content: center;
-    
+/* Product Card (Grid Item) */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s;
+  min-height: 120px;
+  color: inherit;
 }
 
-.o-row-item{
-    width: 1200px;
+.product-card:hover,
+.product-card:focus-visible {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-brand-primary);
+  outline: none;
 }
 
-/*
-    Objects: Container
-    ---
-    Creates a horizontal container that sets de global max-width
-*/
-
-.o-container {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 79.5em; /* 79.5 * 16px = 1272 */
-    width: 100%;
+.product-card__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-main);
 }
 
-/*
-    Objects: Gid
-    ---
-    creates the grid for the web page
-*/
-
-.o-grid{
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 4rem 720px 15rem 25em ;
-    gap: var(--global-whitespace-md);
+.product-card__meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
 }
 
-@media (max-width: 576px) {
-    .o-grid{
-        grid-template-rows: 4rem 400px 15rem 25em;
-    }
+.product-card__price {
+  margin-top: auto;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
 }
 
-/*
-    Object: Button reset
-    ---
-    Small button reset object
-*/
-
-.o-button-reset {
-    border: none;
-    margin: 0;
-    padding: 0;
-    width: auto;
-    overflow: visible;
-    background: transparent;
-
-    /* inherit font & color from ancestor */
-    color: inherit;
-    font: inherit;
-
-    /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
-    line-height: normal;
-
-    /* Corrects font smoothing for webkit */
-    -webkit-font-smoothing: inherit;
-    -moz-osx-font-smoothing: inherit;
-
-    /* Corrects inability to style clickable `input` types in iOS */
-    -webkit-appearance: none;
+@media (prefers-reduced-motion: reduce) {
+  .product-card, .card { transition: none; }
 }
 
+/* ==========================================================================
+   5. COMPONENT: FORMS & BUTTONS
+   ========================================================================== */
+.form-group { margin-bottom: 1rem; }
 
-/*------------------------------------*\
-#COMPONENTS
-\*------------------------------------*/
-
-/*
-    Component: Title
-    ---
-    Website main title
-*/
-.c-title{
-     /* color: white; */
-     justify-self: center;
-     /* font-weight: 600; */
+.form-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text-main);
 }
 
-@media (max-width: 576px) {
-    .c-title{
-        font-size: 1.5rem;
-    }
+.form-input, 
+.input-control, 
+.select-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--color-border);
+  background: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-
-/*
-    Component: products
-    ---
-    website visualization of products 
-*/ 
-
-.c-products{
-    /* display: flex;
-    flex-flow: row wrap;
-    justify-content: center; */
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: var(--global-whitespace-md);
-    padding: var(--global-baseline);
-    margin: var(--global-baseline);
+.form-input:focus, 
+.input-control:focus, 
+.select-control:focus {
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 3px var(--color-focus);
 }
 
-
-.c-product{
-    background-color: var(--global-color-neutral-xxxx-light);
-    border-radius: var(--global-borderRadius);
-    /* padding: var(--global-baseline); */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+/* Buttons */
+.btn, .btn-sort {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius-btn);
+  border: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+  text-align: center;
 }
 
+.btn:active, .btn-sort:active { transform: translateY(1px); }
 
-@media (max-width: 576px) {
-    .c-products{
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(4, 1fr);
-    }
-
+/* Button Variants */
+.btn--primary, .btn-sort {
+  background: linear-gradient(180deg, var(--color-brand-primary), var(--color-brand-secondary));
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.btn--primary:hover, .btn-sort:hover {
+  box-shadow: var(--shadow-lg);
 }
 
-/*
-    Component: Button
-    ---
-    Class to put on form buttons or
-*/
+.btn--ghost {
+  background: #f3f4f6;
+  color: #111;
+}
+.btn--ghost:hover { background: #e5e7eb; }
 
-
-.c-button {    
-    --button-borderColor: var(--global-color-neutral-xxxx-light);
-    /* --button-hover-borderColor: var(--global-color-button-corect-light);
-    --button-active-borderColor: var(--global-color-button-corect-light);
-    --button-focus-borderColor:var(--global-color-button-corect-light); */
-    --button-backgroundColor: var(--global-color-button-corect);
-    --button-hover-backgroundColor: var(--global-color-button-corect-light);
-    --button-active-backgroundColor: var(--global-color-button-corect-light);
-    --button-focus-backgroundColor: var(--global-color-button-corect);    
-    --button-focus-boxShadow: var(--global-input-focus-boxShadow);
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: var(--global-borderRadius);
-    border: var(--global-borderWidth) solid var(--button-borderColor);
-    background-color: var(--button-backgroundColor);
-    color: #fff;
-    line-height: calc(var(--global-baseline) * 3);
-    padding: calc(var(--global-baseline) * 1.5 - var(--global-borderWidth)) var(--global-whitespace-lg);
-    /* width: 100%; */
-    outline: none;
-    box-shadow: var(--button-boxShadow, 0);
-    transition: background-color 0.3s;
+.btn--full {
+  width: 100%;
+  margin-top: 0.5rem;
 }
 
-.c-button:hover {
-    border-color: var(--button-borderColor);
-    background-color: var(--button-hover-backgroundColor);
-    box-shadow: var(--button-focus-boxShadow);
+/* Alerts */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid transparent;
+}
+.alert--error {
+  color: var(--color-error-text);
+  background: var(--color-error-bg);
+  border-left-color: var(--color-error-text);
 }
 
-.c-button:focus {
-    background-color: var(--button-focus-backgroundColor);
-    border-color: var(--button-borderColor);
-    box-shadow: var(--button-focus-boxShadow);
+/* ==========================================================================
+   6. COMPONENT: MODALS / OVERLAYS
+   ========================================================================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 1rem;
+  backdrop-filter: blur(2px);
 }
 
-.c-button:active {
-    background-color: var(--button-active-backgroundColor);
-    border-color: var(--button-borderColor);
-    box-shadow: var(--button-focus-boxShadow, 0);
+.overlay.is-open { display: flex; }
+
+.modal {
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.18);
+  animation: modalFadeIn 0.2s ease-out;
 }
 
-
-.is-wrong{
-    --button-borderColor: var(--global-color-neutral-xxxx-light);
-    /* --button-hover-borderColor: var(--global-color-button-corect-light);
-    --button-active-borderColor: var(--global-color-button-corect-light);
-    --button-focus-borderColor:var(--global-color-button-corect-light); */
-    --button-backgroundColor: var(--global-color-button-wrong);
-    --button-hover-backgroundColor: var(--global-color-button-wrong-light);
-    --button-active-backgroundColor: var(--global-color-button-wrong-light);
-    --button-focus-backgroundColor: var(--global-color-button-wrong);    
-    --button-focus-boxShadow: var(--global-input-focus-boxShadow);
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-/*------------------------------------*\
-#UTILITIES
-\*------------------------------------*/
+.modal__header { margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem; }
+.modal__actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: flex-end; }
 
-/*
-    Utilities: color
-    ---
-    Utility classes to put specific colors onto elements
-*/
+/* ==========================================================================
+   7. PAGE LAYOUTS & GRIDS
+   ========================================================================== */
 
-.u-color-neutral {
-    color: var(--color-neutral);
+/* Toolbar (Home) */
+.toolbar {
+  display: grid;
+  grid-template-columns: 1fr 200px 120px;
+  gap: var(--space-md);
+  align-items: center;
+  max-width: var(--layout-max-width);
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+.toolbar__field { display: flex; align-items: center; gap: 0.6rem; }
+
+@media (max-width: 720px) {
+  .toolbar {
+    grid-template-columns: 1fr 140px;
+    grid-auto-rows: auto;
+    gap: 0.75rem;
+  }
+  .toolbar > *:nth-child(3) { grid-column: 1 / -1; }
 }
 
-.u-color-neutral-dark {
-    color: var(--color-neutral-dark);
+/* Product Grid (Home & Supplier) */
+.product-grid, .product-grid-mini {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.7rem;
+  align-items: start;
+  max-width: var(--layout-max-width);
+  margin: 1rem auto 3rem;
+  padding: 0 1rem;
+}
+.product-grid__category-title {
+  grid-column: 1 / -1;
+  margin: 0.25rem 0 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
 }
 
-/*
-    Utilities: spacing
-    ---
-    Utility classes to put specific margins and paddings onto elements
-*/
+/* Auth Pages (Login/Register) */
+.auth-layout {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+.auth-title {
+  text-align: center;
+  margin-top: 0;
+  color: var(--color-brand-secondary);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+.auth-footer {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+.auth-footer a { color: var(--color-brand-secondary); font-weight: 600; }
+.auth-footer a:hover { text-decoration: underline; }
 
-.u-pt-clear {
-    padding-top: 0 !important;
+/* Product Info Page Layout */
+.product-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  max-width: var(--layout-max-width);
+  margin: 2rem auto;
+  padding: 0 2rem;
 }
 
-.u-mb-clear {
-    margin-bottom: 0 !important;
+/* Supplier Page Layout */
+.supplier-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.7rem;
+  max-width: var(--layout-max-width);
+  margin: 2rem auto;
+  padding: 0 1rem 3rem;
 }
 
-.u-mb-xs {
-    margin-bottom: 4px !important;
+/* Profile Page Layout */
+.profile-layout {
+  max-width: var(--layout-max-width);
+  margin: 2rem auto;
+  padding: 0 1rem 3rem;
 }
 
-.u-mb-sm {
-    margin-bottom: 8px !important;
+@media (max-width: 900px) {
+  .product-layout, .supplier-layout { grid-template-columns: 1fr; }
+  .supplier-layout__map { order: -1; } /* Map on top for mobile */
 }
 
-.u-mb-md {
-    margin-bottom: 16px !important;
+/* ==========================================================================
+   8. SPECIFIC SUB-COMPONENTS
+   ========================================================================== */
+
+/* Map Container */
+.map-wrapper {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+  min-height: 400px;
+  position: relative;
+  background: #e5e7eb;
+}
+#map { width: 100%; height: 100%; min-height: 400px; }
+
+/* Info Grid (Profile Page) */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.info-item { display: flex; flex-direction: column; }
+.info-label { font-size: 0.85rem; color: var(--color-text-muted); font-weight: 500; }
+.info-value { font-size: 1.05rem; font-weight: 500; color: var(--color-text-main); }
+
+/* Order Item (Profile Page) */
+.order-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.order-item:last-child { border-bottom: none; }
+.order-details { flex: 1; min-width: 200px; }
+
+/* Utilities */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.u-mb-lg {
-    margin-bottom: 32px !important;
-}
-
-.u-mb-xl {
-    margin-bottom: 48px !important;
-}
-
-/*
-    Utilities: max-width
-    ---
-    Utility classes to put specific max widths onto elements
-*/
-
-.u-max-width-xs {
-    max-width: 27em !important;
-}
-
-.u-max-width-sm {
-    max-width: 39em !important;
-}
-
-.u-max-width-md {
-    max-width: 50em !important;
-}
-
-.u-max-width-lg {
-    max-width: 63.5em !important;
-}
-
-.u-max-width-none {
-    max-width: none !important;
-}
-
-
-/*
-    Utilities: align
-    ---
-    Utility classes align text or components
-*/
-
-.u-align-text-center {
-    text-align: center;
-}
-
-.u-align-center {
-    margin: 0 auto;
-}
-
-/*
-    Utilities: text
-    Utility classes to create smaller or bigger test
-*/
-
-.u-text-sm {
-    font-size: 0.875rem;
-}
-
-/*
-    Utilities: grid
-    Utility classes to adjust items to grid
-*/
-
-@media (max-width: 992px){
-    .u-grid-column-2-bp2{
-        grid-column: span 2;
-    }
-    .u-grid-column-4-bp2{
-        grid-column: span 4;
-    }
-    .u-grid-column-6-bp2{
-        grid-column: span 6;
-    }
-    .u-grid-column-8-bp2{
-        grid-column: span 8;
-    }
-    
-    .u-grid-row-2-bp2{
-        grid-row: span 2;
-    }
-    .u-grid-row-4-bp2{
-        grid-row: span 4;
-    }
-}
-
-
-
-/*------------------------------------*\
-#MEDIA
-\*------------------------------------*/
-
-/*
-    Media Queries
-    ---
-    EXAMPLE Media Queries for Responsive Design.
-    These examples override the primary ('mobile first') styles.
-    USE THEM INLINE!
-*/
-
-/* Extra small devices (portrait phones, less than 576px)
-No media query since this is the default in mobile first design
-*/
-
-/* Small devices (landscape phones, 576px and up) */
-/* @media (min-width: 576px) {
-    
-} */
-
-
-/* Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {}
-*/
-
-/* Large devices (landscape tablets, desktops, 992px and up)
-@media (min-width: 992px) {}
-*/
-
-/* Extra large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {}
-*/
-
-/*
-    Print styles.
-    ---
-    Inlined to avoid the additional HTTP request:
-    http://www.phpied.com/delay-loading-your-print-css/
-*/
-
-@media print {
-    *,
-    *:before,
-    *:after {
-        background: transparent !important;
-        color: #000 !important;
-        /* Black prints faster:
-        http://www.sanbeiji.com/archives/953 */
-        box-shadow: none !important;
-        text-shadow: none !important;
-    }
-    a,
-    a:visited {
-        text-decoration: underline;
-    }
-    a[href]:after {
-        content: " (" attr(href) ")";
-    }
-    abbr[title]:after {
-        content: " (" attr(title) ")";
-    }
-    /*
-    * Don't show links that are fragment identifiers,
-    * or use the `javascript:` pseudo protocol
-    */
-    a[href^="#"]:after,
-    a[href^="javascript:"]:after {
-        content: "";
-    }
-    pre {
-        white-space: pre-wrap !important;
-    }
-    pre,
-    blockquote {
-        border: 1px solid #999;
-        page-break-inside: avoid;
-    }
-    /*
-    * Printing Tables:
-    * http://css-discuss.incutio.com/wiki/Printing_Tables
-    */
-    thead {
-        display: table-header-group;
-    }
-    tr,
-    img {
-        page-break-inside: avoid;
-    }
-    p,
-    h2,
-    h3 {
-        orphans: 3;
-        widows: 3;
-    }
-    h2,
-    h3 {
-        page-break-after: avoid;
-    }
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
 }

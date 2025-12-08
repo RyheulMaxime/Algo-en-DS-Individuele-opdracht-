@@ -2,276 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AL&DS Shop — Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="AL&DS Shop — premium, responsive product listing" />
-  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png">
+  <title>AL&DS Shop — Home</title>
 
-  <style>
-    :root{
-      --bg:#f5f6f7;
-      --muted:#777;
-      --text:#121214;
-      --surface:#ffffff;
-      --brand-1:#5337ff;
-      --brand-2:#3116c1;
-      --card-radius:16px;
-      --space-sm:0.5rem;
-      --space-md:1rem;
-      --space-lg:1.5rem;
-      --max-width:1100px;
-      --focus: 3px solid rgba(83,55,255,0.16);
-      --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
-      --shadow-lg: 0 4px 20px rgba(0,0,0,0.12);
-      --break-sm: 720px;
-    }
+  <link rel="icon" sizes="16x16" href="../static/favicon/favicon-16x16.png">
+  <link rel="icon" sizes="32x32" href="../static/favicon/favicon-32x32.png">
 
-    /* Reset-ish */
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:var(--bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.35;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* Header */
-    header.site-header{
-      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
-      color: #fff;
-      padding: clamp(1.25rem, 3vw, 2.5rem);
-      text-align:center;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-    }
-    header .brand {
-      margin:0;
-      font-weight:700;
-      letter-spacing:0.6px;
-      font-size: clamp(1.25rem, 2.4vw, 2.2rem);
-      color: #fff;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    header .tagline {
-      margin: .35rem 0 0;
-      font-weight:500;
-      color: rgba(255,255,255,0.92);
-      opacity:0.95;
-      font-size: .95rem;
-    }
-
-    /* Dropdown (header) */
-    .header-actions {
-      position: absolute;
-      right: 1rem;
-      top: 1rem;
-      display:flex;
-      gap:.5rem;
-      align-items:center;
-    }
-    .dropbtn {
-      background-color: transparent;
-      color: white;
-      padding: .5rem .8rem;
-      font-size: 0.95rem;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .dropdown {
-      position: relative;
-    }
-    .dropdown-content {
-      display:none;
-      position:absolute;
-      right:0;
-      background-color:#fff;
-      color:#111;
-      min-width:160px;
-      box-shadow: 0 8px 24px rgba(2,6,23,0.12);
-      border-radius: 10px;
-      overflow: hidden;
-      z-index: 30;
-    }
-    .dropdown-content a, .dropdown-content button {
-      display:block;
-      width:100%;
-      padding: .6rem 1rem;
-      border: none;
-      background: none;
-      text-align:left;
-      color: inherit;
-      font-size: .95rem;
-      cursor: pointer;
-    }
-    .dropdown-content a:hover, .dropdown-content button:hover { background: #f3f4f6; }
-    .dropdown.open .dropdown-content{ display:block; }
-
-    /* Controls (search + sort) */
-    .controls {
-      max-width: var(--max-width);
-      margin: 1.5rem auto;
-      padding: 0 1rem;
-      display: grid;
-      grid-template-columns: 1fr 200px 120px;
-      gap: var(--space-md);
-      align-items:center;
-    }
-    @media (max-width:720px){
-      .controls{ grid-template-columns: 1fr 140px; grid-auto-rows: auto; gap: .75rem; }
-      .controls > *:nth-child(3){ grid-column: 1 / -1; }
-    }
-
-    .control-field{
-      display:flex;
-      align-items:center;
-      gap:.6rem;
-    }
-    input[type="search"], select{
-      width:100%;
-      padding:.75rem 1rem;
-      border-radius:12px;
-      border: 1px solid #ddd;
-      background: #fff;
-      font-size:1rem;
-      outline: none;
-    }
-    input[type="search"]:focus, select:focus{
-      box-shadow: var(--focus);
-      border-color: var(--brand-1);
-    }
-    button.sort-btn{
-      padding:.75rem 1rem;
-      border-radius:12px;
-      border:0;
-      background: linear-gradient(180deg,var(--brand-1),var(--brand-2));
-      color:#fff;
-      font-weight:600;
-      cursor:pointer;
-      transition: transform .14s ease, box-shadow .14s ease;
-      box-shadow: var(--shadow-sm);
-    }
-    button.sort-btn:active{ transform: translateY(1px) }
-    button.sort-btn:focus{ box-shadow: var(--focus) }
-
-    /* Grid */
-    .products-grid{
-      max-width: var(--max-width);
-      margin: 1rem auto 3rem;
-      padding: 0 1rem;
-      display:grid;
-      gap:1.7rem;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      align-items:start;
-    }
-
-    /* Product card as link */
-    .product {
-      background: var(--surface);
-      border-radius: var(--card-radius);
-      padding: 1.2rem;
-      box-shadow: var(--shadow-sm);
-      transition: transform .22s ease, box-shadow .22s ease;
-      display:flex;
-      flex-direction:column;
-      gap:.5rem;
-      min-height:120px;
-      outline: none;
-      text-decoration: none;
-      color: inherit;
-    }
-    .product:focus, .product:hover{
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-    }
-    .product .title{ font-weight:600; font-size:1rem; color:var(--text); margin:0; }
-    .product .meta{ color:var(--muted); font-size:.9rem; margin:0; }
-    .product .price{ margin-top:auto; font-weight:700; color:var(--brand-1); font-size:1.05rem; }
-
-    .empty-state{ text-align:center; padding:3rem 1rem; color:var(--muted); font-size:1.05rem; }
-
-    .visually-hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; border:0; padding:0; margin:-1px; }
-
-    @media (prefers-reduced-motion: reduce){ .product{ transition:none } }
-
-    /* Modal / overlay styles */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.45);
-      z-index: 60;
-      padding: 1rem;
-    }
-    .overlay.open { display:flex; }
-    .modal {
-      background: white;
-      border-radius: 12px;
-      padding: 1.25rem;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.18);
-    }
-    .modal h2{ margin:0 0 .5rem; }
-    .modal p{ margin:.25rem 0; color:var(--muted); }
-    .modal .actions { margin-top:1rem; display:flex; gap:.5rem; justify-content:flex-end; }
-    .btn { padding:.6rem .85rem; border-radius:8px; border:0; cursor:pointer; font-weight:600; }
-    .btn.primary { background: linear-gradient(180deg,var(--brand-1),var(--brand-2)); color:#fff; }
-    .btn.ghost { background: #f3f4f6; color: #111; }
-
-  </style>
+  <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header" role="banner">
-    <!-- clicking this returns to the main page -->
-    <a class="brand" href="/" aria-label="Go to homepage">AL&amp;DS Shop</a>
-    <p class="tagline">Curated products — clean design, delightful shopping</p>
 
-    <!-- Header right actions (dropdown) -->
-    <div class="header-actions" aria-hidden="false">
-      <div id="user-dropdown" class="dropdown" aria-haspopup="true">
+  <header class="site-header" role="banner">
+    <a class="site-header__brand" href="/" aria-label="Go to homepage">AL&amp;DS Shop</a>
+    <p class="site-header__tagline">Curated products — clean design, delightful shopping</p>
+
+    <div class="user-menu" aria-hidden="false">
+      <div id="user-dropdown" class="user-menu__dropdown" aria-haspopup="true">
         {% if customer %}
-          <button id="user-button" class="dropbtn" aria-expanded="false">{{ customer.customername }}</button>
-          <div class="dropdown-content" role="menu" aria-label="User menu">
-            <a role="menuitem" href="/customer">Customer Profile</a>
-            <a role="menuitem" href="/logout">Logout</a>
+          <button id="btn-user-menu" class="user-menu__trigger" aria-expanded="false">
+            {{ customer.customername }}
+          </button>
+          <div class="user-menu__content" role="menu" aria-label="User menu">
+            <a role="menuitem" class="user-menu__link" href="/customer">Customer Profile</a>
+            <a role="menuitem" class="user-menu__link" href="/logout">Logout</a>
           </div>
         {% else %}
-          <button id="user-button" class="dropbtn" aria-expanded="false">Account</button>
-          <div class="dropdown-content" role="menu" aria-label="Account menu">
-            <!-- For later does not seam to work with socket, login_user not alowed trough socket.io -->
-            <!-- <button id="open-login" type="button">Login</button> -->
-            <a role="menuitem" href="/login">Login</a>
-            <a role="menuitem" href="/register">Register</a>
+          <button id="btn-user-menu" class="user-menu__trigger" aria-expanded="false">
+            Account
+          </button>
+          <div class="user-menu__content" role="menu" aria-label="Account menu">
+            <a role="menuitem" class="user-menu__link" href="/login">Login</a>
+            <a role="menuitem" class="user-menu__link" href="/register">Register</a>
           </div>
         {% endif %}
       </div>
     </div>
   </header>
 
-  <!-- Controls (search + sort) -->
-  <section class="controls" aria-label="Search and sort products">
-    <!-- Search (semantic form for accessibility) -->
+  <section class="toolbar" aria-label="Search and sort products">
     <form id="search-form" role="search" onsubmit="return false;" aria-label="Search products">
-      <label for="search-input" class="visually-hidden">Search products</label>
-      <input id="search-input" type="search" placeholder="Search products…" aria-label="Search products" autocomplete="off" />
+      <label for="search-input" class="sr-only">Search products</label>
+      <input id="search-input" class="input-control" type="search" placeholder="Search products…" aria-label="Search products" autocomplete="off" />
     </form>
 
-    <!-- Sorting -->
-    <div class="control-field" aria-hidden="false">
-      <label for="ordering" class="visually-hidden">Sort products by</label>
-      <select id="ordering" aria-label="Sort products">
+    <div class="toolbar__field" aria-hidden="false">
+      <label for="ordering-select" class="sr-only">Sort products by</label>
+      <select id="ordering-select" class="select-control" aria-label="Sort products">
         <option value="" selected disabled hidden>Select Sorting system</option>
         <option value="category">Category</option>
         <option value="price_asc">Price: Low → High</option>
@@ -281,311 +58,261 @@
       </select>
     </div>
 
-    <!-- Sort button triggers a backend-aware redirect -->
     <div>
-      <button class="sort-btn" id="sort-button" aria-label="Apply sorting">Sort</button>
+      <button id="btn-sort" class="btn-sort" aria-label="Apply sorting">Sort</button>
     </div>
   </section>
 
-  <!-- Live results count for screen readers -->
-  <div aria-live="polite" aria-atomic="true" id="results-count" class="visually-hidden"></div>
+  <div aria-live="polite" aria-atomic="true" id="results-count" class="sr-only"></div>
 
-  <!-- Product grid -->
-  <main id="main" role="main">
-    <section id="products-grid" class="products-grid" aria-label="Products">
+  <main id="main-content" role="main">
+    <section id="products-grid" class="product-grid" aria-label="Products">
       {% if sorting_system == "category" %}
         {% for key, value in products.items() %}
-          <h2 style="grid-column:1/-1;margin:.25rem 0 .5rem;color:var(--muted);font-size:.95rem">{{ key }}</h2>
+          <h2 class="product-grid__category-title">{{ key }}</h2>
           {% for product in value %}
-            <!-- product card is an anchor to make it semantic and keyboard friendly -->
-            <a class="product js-product" href="/product?id={{ product.productid }}&supplierid={{ product.supplierid }}&categoryid={{ product.categoryid }}"
+            <a class="product-card js-product-item"
+               href="/product?id={{ product.productid }}&supplierid={{ product.supplierid }}&categoryid={{ product.categoryid }}"
                data-id="{{ product.productid }}"
                data-supplier="{{ product.supplierid }}"
                data-category="{{ product.categoryid }}"
                data-name="{{ product.productname|default('') }}"
                data-price="{{ product.price|default(0) }}">
-              <p class="title">{{ product.productname }}</p>
-              <p class="meta">{{ product.unit }}</p>
-              <p class="price">${{ '%.2f'|format(product.price) }}</p>
+              <p class="product-card__title">{{ product.productname }}</p>
+              <p class="product-card__meta">{{ product.unit }}</p>
+              <p class="product-card__price">${{ '%.2f'|format(product.price) }}</p>
             </a>
           {% endfor %}
         {% endfor %}
       {% elif products %}
         {% for product in products %}
-          <a class="product js-product" href="/product?id={{ product.productid }}&supplierid={{ product.supplierid }}&categoryid={{ product.categoryid }}"
+          <a class="product-card js-product-item"
+             href="/product?id={{ product.productid }}&supplierid={{ product.supplierid }}&categoryid={{ product.categoryid }}"
              data-id="{{ product.productid }}"
              data-supplier="{{ product.supplierid }}"
              data-category="{{ product.categoryid }}"
              data-name="{{ product.productname|default('') }}"
              data-price="{{ product.price|default(0) }}">
-            <p class="title">{{ product.productname }}</p>
-            <p class="meta">{{ product.unit }}</p>
-            <p class="price">${{ '%.2f'|format(product.price) }}</p>
+            <p class="product-card__title">{{ product.productname }}</p>
+            <p class="product-card__meta">{{ product.unit }}</p>
+            <p class="product-card__price">${{ '%.2f'|format(product.price) }}</p>
           </a>
         {% endfor %}
       {% else %}
-        <div class="empty-state" id="empty-state-message">
-          No products available.
-        </div>
+        <div class="empty-state">No products available.</div>
       {% endif %}
     </section>
 
-    <!-- Empty-state that JS can toggle (kept outside the templating conditional to be robust) -->
     <div id="empty-state-js" class="empty-state" style="display:none">No products found.</div>
   </main>
 
-  <!-- Login Modal -->
-  <div id="login-overlay" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div id="modal-login" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal" role="document" aria-labelledby="login-title">
-      <h2 id="login-title">Login to your account</h2>
-      <form id="login-form" class="js-login-form" autocomplete="on">
-        <label for="username" class="visually-hidden">Username</label>
-        <input id="username" name="username" type="text" placeholder="Username" required autocomplete="username" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #ddd;margin-top:.5rem"/>
-        <label for="password" class="visually-hidden">Password</label>
-        <input id="password" name="password" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #ddd;margin-top:.5rem"/>
-        <div class="actions" style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem;">
-          <button type="button" class="btn ghost" id="login-cancel">Cancel</button>
-          <button type="submit" class="btn primary">Login</button>
+      <h2 id="login-title" class="modal__title">Login to your account</h2>
+      <form id="form-login" class="js-login-form" autocomplete="on">
+        <label for="username" class="sr-only">Username</label>
+        <input id="username" class="input-control" name="username" type="text" placeholder="Username" required autocomplete="username" style="margin-top:0.5rem" />
+        
+        <label for="password" class="sr-only">Password</label>
+        <input id="password" class="input-control" name="password" type="password" placeholder="Password" autocomplete="current-password" style="margin-top:0.5rem" />
+        
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" id="btn-login-cancel">Cancel</button>
+          <button type="submit" class="btn btn--primary">Login</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Error Modal (shown when login fails) -->
-  <div id="error-overlay" class="overlay" role="alertdialog" aria-modal="true" aria-hidden="true">
+  <div id="modal-error" class="overlay" role="alertdialog" aria-modal="true" aria-hidden="true">
     <div class="modal" role="document" aria-labelledby="error-title">
-      <h2 id="error-title">Login failed</h2>
-      <p id="error-message">Unable to log in. Please check your credentials and try again.</p>
-      <div class="actions">
-        <button class="btn ghost" id="error-close">Close</button>
+      <h2 id="error-title" class="modal__title">Login failed</h2>
+      <p id="error-message" class="modal__text">Unable to log in. Please check your credentials and try again.</p>
+      <div class="modal__actions">
+        <button class="btn btn--ghost" id="btn-error-close">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- Socket.IO (server-based login flow) -->
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  
   <script>
     (function () {
-      // --- DOM references ---
-      const searchInput = document.getElementById('search-input');
-      const ordering = document.getElementById('ordering');
-      const sortButton = document.getElementById('sort-button');
-      const resultsCount = document.getElementById('results-count');
-      const emptyStateJs = document.getElementById('empty-state-js');
-      const productSelector = '.js-product';
+      'use strict';
 
-      // Dropdown
-      const userDropdown = document.getElementById('user-dropdown');
-      const userButton = document.getElementById('user-button');
-      if (userButton && userDropdown) {
-        userButton.addEventListener('click', () => {
-          userDropdown.classList.toggle('open');
-          const expanded = userButton.getAttribute('aria-expanded') === 'true';
-          userButton.setAttribute('aria-expanded', String(!expanded));
+      // --- DOM Elements ---
+      const els = {
+        searchInput: document.getElementById('search-input'),
+        orderingSelect: document.getElementById('ordering-select'),
+        sortButton: document.getElementById('btn-sort'),
+        resultsCount: document.getElementById('results-count'),
+        emptyStateJs: document.getElementById('empty-state-js'),
+        userDropdown: document.getElementById('user-dropdown'),
+        userButton: document.getElementById('btn-user-menu'),
+        
+        // Modals
+        loginOverlay: document.getElementById('modal-login'),
+        errorOverlay: document.getElementById('modal-error'),
+        loginForm: document.getElementById('form-login'),
+        loginCancel: document.getElementById('btn-login-cancel'),
+        errorClose: document.getElementById('btn-error-close'),
+        
+        // Triggers (Buttons that might not exist based on auth state)
+        openLoginBtn: document.getElementById('open-login'),
+      };
+
+      // Cache product nodes for filtering performance
+      let productNodes = Array.from(document.querySelectorAll('.js-product-item'));
+
+      // --- Dropdown Logic ---
+      if (els.userButton && els.userDropdown) {
+        els.userButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isExpanded = els.userButton.getAttribute('aria-expanded') === 'true';
+          toggleDropdown(!isExpanded);
         });
-        // Close dropdown if clicking outside
+
         document.addEventListener('click', (e) => {
-          if (!userDropdown.contains(e.target)) {
-            userDropdown.classList.remove('open');
-            if (userButton) userButton.setAttribute('aria-expanded', 'false');
+          if (!els.userDropdown.contains(e.target)) {
+            toggleDropdown(false);
           }
         });
       }
 
-      // --- Product handling & search ---
-      function getProductNodes() {
-        return Array.from(document.querySelectorAll(productSelector));
+      function toggleDropdown(shouldOpen) {
+        if (!els.userDropdown || !els.userButton) return;
+        
+        if (shouldOpen) {
+          els.userDropdown.classList.add('is-open');
+          els.userButton.setAttribute('aria-expanded', 'true');
+        } else {
+          els.userDropdown.classList.remove('is-open');
+          els.userButton.setAttribute('aria-expanded', 'false');
+        }
       }
 
-      function normalize(str) {
+      // --- Product Search ---
+      function normalizeStr(str) {
         return (str || '').toString().trim().toLowerCase();
       }
 
-      function filterProductsBySearch(term) {
-        const nodes = getProductNodes();
-        const t = normalize(term);
-        let visible = 0;
-        nodes.forEach(node => {
-          const name = normalize(node.dataset.name);
-          const match = name.includes(t);
-          node.style.display = match ? '' : 'none';
-          if (match) visible++;
+      function filterProducts(term) {
+        const normalizedTerm = normalizeStr(term);
+        let visibleCount = 0;
+
+        productNodes.forEach(node => {
+          const name = normalizeStr(node.dataset.name);
+          const isMatch = name.includes(normalizedTerm);
+          
+          node.style.display = isMatch ? '' : 'none';
+          if (isMatch) visibleCount++;
         });
-        if (resultsCount) {
-          resultsCount.textContent = visible + ' product' + (visible === 1 ? '' : 's') + ' visible';
+
+        // Accessibility Update
+        if (els.resultsCount) {
+          els.resultsCount.textContent = `${visibleCount} product${visibleCount === 1 ? '' : 's'} visible`;
         }
-        if (emptyStateJs) {
-          emptyStateJs.style.display = visible === 0 ? '' : 'none';
+
+        // Empty State Toggle
+        if (els.emptyStateJs) {
+          els.emptyStateJs.style.display = visibleCount === 0 ? '' : 'none';
         }
       }
 
-      // keyboard behaviour for product cards (anchors already handle Enter)
-      function bindProductInteractions() {
-        getProductNodes().forEach(node => {
-          node.addEventListener('keydown', (e) => {
-            if (e.key === ' ' || e.key === 'Spacebar') {
-              // allow space to activate link for keyboard-only users
-              e.preventDefault();
-              window.location.href = node.href;
-            }
-          });
+      // --- Product Interaction (Keyboard) ---
+      productNodes.forEach(node => {
+        node.addEventListener('keydown', (e) => {
+          if (e.key === ' ' || e.key === 'Spacebar') {
+            e.preventDefault();
+            // Simulate click for keyboard users on the card
+            window.location.href = node.href;
+          }
         });
-      }
+      });
 
-      
-      // ************************************** No Used *******************************************************
-      // navigation helper (keeps previous behaviour if needed)
-      // function navigateToProduct(id, supplier, category) {
-      //   if (!id) return;
-      //   window.location.href = '/product?id=' + encodeURIComponent(id) + (supplier ? '&supplierid=' + encodeURIComponent(supplier) : '') + (category ? '&categoryid=' + encodeURIComponent(category) : '');
-      // }
-
-      // Sorting helper
+      // --- Sorting Logic ---
       function applySorting() {
-        const val = ordering ? ordering.value : '';
-        if (!val) {
-          // if no sorting selected, just reload to base
+        const value = els.orderingSelect ? els.orderingSelect.value : '';
+        if (!value) {
           window.location.href = '/';
           return;
         }
-        window.location.href = '/?sorting_system=' + encodeURIComponent(val);
+        window.location.href = '/?sorting_system=' + encodeURIComponent(value);
       }
 
-      // --- Login modal & socket flow ---
-      const loginOverlay = document.getElementById('login-overlay');
-      const errorOverlay = document.getElementById('error-overlay');
-      const loginForm = document.getElementById('login-form');
-      const openLoginBtn = document.getElementById('open-login');
-      const loginCancel = document.getElementById('login-cancel');
-      const errorClose = document.getElementById('error-close');
-      const usernameInput = document.getElementById('username');
+      // --- Modal Management ---
+      function setOverlayState(overlay, isOpen) {
+        if (!overlay) return;
+        
+        if (isOpen) {
+          overlay.classList.add('is-open');
+          overlay.setAttribute('aria-hidden', 'false');
+          // Focus trap helper: focus first interactive element
+          const firstInput = overlay.querySelector('input, button');
+          if (firstInput) firstInput.focus();
+        } else {
+          overlay.classList.remove('is-open');
+          overlay.setAttribute('aria-hidden', 'true');
+        }
+      }
 
-      // initialize socket.io client
-      // Assumes server is configured for socket.io on same origin
+      // --- Event Listeners ---
+      
+      // Search Input
+      if (els.searchInput) {
+        els.searchInput.addEventListener('input', (e) => filterProducts(e.target.value));
+      }
+
+      // Sort Button
+      if (els.sortButton) {
+        els.sortButton.addEventListener('click', applySorting);
+      }
+
+      // Modal Triggers
+      if (els.openLoginBtn) {
+        els.openLoginBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          setOverlayState(els.loginOverlay, true);
+        });
+      }
+
+      if (els.loginCancel) {
+        els.loginCancel.addEventListener('click', () => setOverlayState(els.loginOverlay, false));
+      }
+
+      if (els.errorClose) {
+        els.errorClose.addEventListener('click', () => setOverlayState(els.errorOverlay, false));
+      }
+
+      // Global Keyboard Shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          setOverlayState(els.loginOverlay, false);
+          setOverlayState(els.errorOverlay, false);
+        }
+      });
+
+      // --- Socket.IO & Login Logic (WIP) ---
       let socket = null;
       try {
         socket = io();
       } catch (err) {
-        console.warn('Socket.IO could not be initialized:', err);
+        console.warn('Socket.IO init failed:', err);
       }
 
-      // Helpers to show/hide overlays with ARIA toggles and focus management
-      function openOverlay(el) {
-        if (!el) return;
-        el.classList.add('open');
-        el.setAttribute('aria-hidden', 'false');
-        // focus first focusable element inside modal
-        const first = el.querySelector('input, button, [tabindex]:not([tabindex="-1"])');
-        if (first) first.focus();
-      }
+      /* * TODO: Socket-based login logic.
+       * Currently disabled per requirements "For later does not seem to work with socket".
+       * * Implementation plan:
+       * 1. Listen to 'submit' on els.loginForm
+       * 2. Emit 'login' event
+       * 3. Handle 'login_failed' and 'login_success' socket events
+       */
 
-      function closeOverlay(el) {
-        if (!el) return;
-        el.classList.remove('open');
-        el.setAttribute('aria-hidden', 'true');
-      }
+      // Initial State
+      filterProducts((els.searchInput && els.searchInput.value) || '');
 
-      // Show login modal from header button
-      if (openLoginBtn) {
-        openLoginBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          openOverlay(loginOverlay);
-        });
-      }
-
-      // Show login if dropdown Login button is used (existing header)
-      const headerLoginBtn = document.getElementById('open-login');
-      if (headerLoginBtn) {
-        headerLoginBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          openOverlay(loginOverlay);
-        });
-      }
-
-      // Cancel login
-      if (loginCancel) loginCancel.addEventListener('click', () => closeOverlay(loginOverlay));
-
-      // Close error
-      if (errorClose) errorClose.addEventListener('click', () => closeOverlay(errorOverlay));
-
-      // Global escape to close modals
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          closeOverlay(loginOverlay);
-          closeOverlay(errorOverlay);
-        }
-      });
-
-      // login submit handling
-      // if (loginForm) {
-      //   loginForm.addEventListener('submit', (e) => {
-      //     e.preventDefault();
-      //     const username = (document.getElementById('username') || {}).value || '';
-      //     const password = (document.getElementById('password') || {}).value || '';
-      //     // if (!username || !password) {  // Pasword not required
-      //     if (!username) {
-      //       // quick client validation -> show error
-      //       const errMsg = document.getElementById('error-message');
-      //       if (errMsg) errMsg.textContent = 'Please enter username.';
-      //       openOverlay(errorOverlay);
-      //       return;
-      //     }
-
-      //     if (socket && socket.connected) {
-      //       socket.emit('login', { customer: username, password: password });
-      //     } else {
-      //       // fallback: simulate login failure if socket not available
-      //       const errMsg = document.getElementById('error-message');
-      //       if (errMsg) errMsg.textContent = 'Unable to contact login server. Try again later.';
-      //       openOverlay(errorOverlay);
-      //     }
-      //   });
-      // }
-
-      // Socket event handlers
-      // if (socket) {
-      //   // server-side should emit login_failed with an optional message
-      //   socket.on('login_failed', (payload) => {
-      //     const message = (payload && payload.message) ? payload.message : 'Unable to log in. Please check your credentials.';
-      //     const errMsg = document.getElementById('error-message');
-      //     if (errMsg) errMsg.textContent = message;
-      //     openOverlay(errorOverlay);
-      //   });
-
-      //   // // server-side should emit login_success with optional redirect
-      //   // socket.on('login_success', (payload) => {
-      //   //   closeOverlay(loginOverlay);
-      //   //   // if server sends redirect URL, go there, otherwise reload or go to profile
-      //   //   if (payload && payload.redirect) {
-      //   //     window.location.href = payload.redirect;
-      //   //   } else {
-      //   //     window.location.href = '/customer';
-      //   //   }
-      //   // });
-
-      //   // handle socket connection errors gracefully
-      //   socket.on('connect_error', () => {
-      //     console.warn('Socket connection error');
-      //   });
-      // }
-
-      // --- Event listeners for search/sort/products ---
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          filterProductsBySearch(e.target.value);
-        });
-      }
-      if (sortButton) sortButton.addEventListener('click', applySorting);
-
-      // initial bind
-      bindProductInteractions();
-      filterProductsBySearch((searchInput && searchInput.value) || '');
-
-      // Expose small debug object in dev (safe)
-      window.__ALDS = {
-        filter: filterProductsBySearch,
-        productCount: getProductNodes().length
-      };
+      // Dev Debug
+      window.__ALDS = { filter: filterProducts, count: productNodes.length };
     })();
   </script>
 </body>

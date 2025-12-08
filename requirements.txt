@@ -4,3 +4,5 @@ flask_sqlalchemy
 Flask-Migrate
 flask_socketio
 psycopg2-binary
+flask_login 
+werkzeug

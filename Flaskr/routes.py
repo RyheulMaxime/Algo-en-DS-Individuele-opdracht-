@@ -51,6 +51,11 @@ def load_user(user_id):
 
 @main.route('/', methods=['GET'])
 def index():
+    user = None
+    if current_user.is_authenticated:
+        print("user logged in")
+        user = current_user
+
     products = Products.query.all()
     sorting_system = request.args.get('sorting_system')
     # print("************************** sorting system: ", sorting_system)
@@ -74,9 +79,9 @@ def index():
             sorted_products = sorted(products, key=lambda p: p.productname, reverse=True)
         if sorted_products is not None:
             # print(sorted_products)
-            return render_template('index.html', products=sorted_products, sorting_system=sorting_system)
-        return render_template('index.html', products=products, sorting_system=sorting_system)
-    return render_template('index.html', products=None)
+            return render_template('index.html', products=sorted_products, sorting_system=sorting_system, customer=user)
+        return render_template('index.html', products=products, sorting_system=sorting_system, customer=user)
+    return render_template('index.html', products=None, customer=user)
 
 # @main.route('/product/<productId>', methods=['GET'])
 @main.route('/product', methods=['GET', 'POST'])
@@ -157,23 +162,22 @@ def login():
 
         if customer and password == customer.password:
             login_user(customer)
-            print("user logged in without password")    
+            return redirect(url_for("main.index"))  
         elif customer and check_password_hash(customer.password, password):
             login_user(customer)
-            print("user logged in")
-            return redirect(url_for("dashboard"))
+            return redirect(url_for("main.index"))
         else:
-            print("user not logged in")
-            return render_template("login.html", error="Invalid username or password")
+            socketio.emit('login_failed', {'username': username})
+            return
 
-    return render_template("login.html")
+    return render_template("index.html")
 
 # Logout route
 @main.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("home"))
+    return redirect(url_for("main.index"))
 
 
 # Test database and check connection
@@ -224,7 +228,24 @@ def handle_message(data):
     
     place_order(data['productid'], data['quantity'])
 
-@socketio.on('Login')
-def handle_message(data):
-    
-    place_order(data['productid'], data['quantity'])
+@socketio.on('login')
+def handle_message(data):  
+    print(data)
+    username = data['customer']
+    password = data['password']
+
+    customer = Customers.query.filter_by(customername=username).first()
+
+    if password == '':
+        password = None
+
+    print(username, password)
+    if customer and password == customer.password:
+        login_user(customer)
+        return redirect(url_for("main.index"))  
+    elif customer and check_password_hash(customer.password, password):
+        login_user(customer)
+        return redirect(url_for("main.index"))
+    else:
+        socketio.emit('login_failed', {'username': username})
+        return

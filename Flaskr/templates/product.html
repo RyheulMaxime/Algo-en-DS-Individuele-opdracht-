@@ -214,6 +214,7 @@
             socket.emit("order", { productid: product_id, quantity:  qty});
         }
 
+        // Modal funtions to show info order:
         // TOODO Add order succes modal and failure modal
         socket.on("order_failed", data => {
             console.log('order failed');

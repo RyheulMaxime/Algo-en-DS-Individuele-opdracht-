@@ -172,13 +172,22 @@
         </div>
 
         <!-- Order Box -->
-        <div class="order_box">
+         <form class="order_box" action="/product?id={{ product.productid }}&supplierid={{ supplier.supplierid }}&categoryid={{ category.categoryid }}" method="post">
             <label class="order-label" for="quantity">How much would you like to order?</label>
-            <input id="quantity" type="number" min="1" value="1">
+            <input name="quantity" id="quantity" type="number" min="1" value="1">
 
-            <button id="order-btn">Order product</button>
-        </div>
+            <button type="submit" class="order-btn">Order product</button>
+        </form>
 
+        <form class="login-form" action="/login" method="post">
+            <label for="username">Username</label>
+            <input type="text" name="username" required />
+
+            <label for="password">Password</label>
+            <input type="password" name="password" />
+
+            <button type="submit" class="login-btn">Login</button>
+        </form>
     </div>
 
     {% else %}
@@ -186,54 +195,55 @@
     {% endif %}
 
     <!-- Modal -->
-    <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
+    <!-- <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
         <div class="modal">
             <h2>Order Failed</h2>
             <p>The product could not be ordered.</p>
             <button class="close-btn" onclick="closeModal()">Close</button>
         </div>
-    </div>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script>
-        const socket = io();
-        const modal = document.getElementById("modal-overlay");
-        const btn = document.getElementById("order-btn");
+    </div> -->
+    <!-- <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script> -->
+    <!-- <script>
+        // const socket = io();
+        // const modal = document.getElementById("modal-overlay");
+        // const btn = document.getElementById("order-btn");
 
-        btn.onclick = orderProduct;
+        // btn.onclick = orderProduct;
 
-        function orderProduct() {
-            const qty = document.getElementById("quantity").value;
-            const product_id = document.querySelector(".js-product_info").id;
+        // function orderProduct() {
+        //     const qty = document.getElementById("quantity").value;
+        //     const product_id = document.querySelector(".js-product_info").id;
 
-            if (!qty || qty <= 0) {
-                showModal();
-                return;
-            }
+        //     if (!qty || qty <= 0) {
+        //         showModal();
+        //         return;
+        //     }
 
-            // Backend call
-            socket.emit("order", { productid: product_id, quantity:  qty});
-        }
+        //     // Backend call
+        //     socket.emit("order", { productid: product_id, quantity:  qty});
+        // }
 
         // Modal funtions to show info order:
         // TOODO Add order succes modal and failure modal
-        socket.on("order_failed", data => {
-            console.log('order failed');
-            showModal();
-        });
 
-        function showModal() {
-            modal.style.display = "flex";
-        }
+        // socket.on("order_failed", data => {
+        //     console.log('order failed');
+        //     showModal();
+        // });
 
-        function closeModal() {
-            modal.style.display = "none";
-        }
+        // function showModal() {
+        //     modal.style.display = "flex";
+        // }
 
-        // Close on ESC
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") closeModal();
-        });
-    </script>
+        // function closeModal() {
+        //     modal.style.display = "none";
+        // }
+
+        // // Close on ESC
+        // document.addEventListener("keydown", (e) => {
+        //     if (e.key === "Escape") closeModal();
+        // });
+    </script> -->
 
 </body>
 </html>

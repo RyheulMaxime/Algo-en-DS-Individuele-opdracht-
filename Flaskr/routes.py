@@ -6,6 +6,7 @@ from flask_socketio import emit # <-- Only import emit
 from . import socketio, login_manager   # import socketio from the app package
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 main = Blueprint('main', __name__)
 
@@ -46,7 +47,7 @@ def load_user(user_id):
 def index():
     user = None
     if current_user.is_authenticated:
-        print("user logged in")
+        # print("user logged in")
         user = current_user
 
     products = Products.query.all()
@@ -75,20 +76,41 @@ def index():
 @main.route('/product', methods=['GET', 'POST'])
 # @main.route('/product', methods=['GET', 'POST'])
 def product(product_id=None):
+    
     product_id = request.args.get('id')
-    if method == "POST":
-        pass
-
     supplier_id = request.args.get('supplierid')
     category_id = request.args.get('categoryid')
+    
+    if current_user.is_authenticated:
+        user = current_user
+
+    if request.method == "POST":
+        quantity = request.form.get('quantity')
+
+        if current_user.is_authenticated:
+            print("place order")
+            new_order_id = Orders.query.order_by(Orders.orderid.desc()).first().orderid + 1
+            customer_id = current_user.customerid
+            new_order = Orders(orderid = new_order_id, customerid=customer_id, employeeid=None, orderdate=datetime.date.today(), shipperid=None, delivered=False)
+            db.session.add(new_order)
+            # db.session.commit()
+            print(quantity)
+
+            new_order_details_id = OrderDetails.query.order_by(OrderDetails.orderdetailid.desc()).first().orderdetailid + 1
+            new_order_details = OrderDetails(orderdetailid = new_order_details_id, orderid=new_order_id, productid=product_id, quantity=quantity)
+            
+            db.session.add(new_order_details)
+            db.session.commit()
+            return redirect(url_for('main.index'))
+
     
     if product_id is None or supplier_id is None or category_id is None:
         return render_template('product.html', product=None)
     product_info = Products.query.get((int(product_id), int(supplier_id), int(category_id)))
     supplier_info = Suppliers.query.get(int(supplier_id))
     category_info = Categories.query.get(int(category_id))
-    print("product info: ", product_info)
-    return render_template('product.html', product=product_info, supplier = supplier_info, category = category_info)
+    return render_template('product.html', user=user, product=product_info, supplier = supplier_info, category = category_info)
+
 
 @main.route('/supplier', methods=['GET', 'POST'])
 def supplier(supplier_id=None):

@@ -396,14 +396,13 @@
       }
 
       // Navigation stub - adapt to real routing in your app
-      // ************************************** No Used *******************************************************
-      // function navigateToProduct(id, supplier, category){
-      //   if(!id) return;
-      //   // Example: client-side route (or server route)
-      //   // window.location.href = '/product/' + encodeURIComponent(id);
-      //   // We choose a query param path to match earlier examples:
-      //   window.location.href = '/product?id=' + encodeURIComponent(id) + '&supplierid=' + encodeURIComponent(supplier) + '&categoryid=' + encodeURIComponent(category);
-      // }
+      function navigateToProduct(id, supplier, category){
+        if(!id) return;
+        // Example: client-side route (or server route)
+        // window.location.href = '/product/' + encodeURIComponent(id);
+        // We choose a query param path to match earlier examples:
+        window.location.href = '/product?id=' + encodeURIComponent(id) + '&supplierid=' + encodeURIComponent(supplier) + '&categoryid=' + encodeURIComponent(category);
+      }
 
       // Sorting: send user to backend with sorting param
       function applySorting(){

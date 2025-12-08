@@ -72,10 +72,13 @@ def index():
         return render_template('index.html',customer=user, products=products, sorting_system=sorting_system)
     return render_template('index.html', customer=user, products=None)
 
-@main.route('/product', methods=['GET'])
+@main.route('/product', methods=['GET', 'POST'])
 # @main.route('/product', methods=['GET', 'POST'])
 def product(product_id=None):
     product_id = request.args.get('id')
+    if method == "POST":
+        pass
+
     supplier_id = request.args.get('supplierid')
     category_id = request.args.get('categoryid')
     
@@ -163,12 +166,9 @@ def logout():
 
 @main.route("/customer", methods=["GET"])
 @login_required
-def profile():
+def customer():
     customer = Customers.query.filter_by(customerid=current_user.customerid).first()
-    
     orders = Orders.query.filter_by(customerid=current_user.customerid).all()
-    order_details = OrderDetails.query.filter_by(orderid=Orders.orderid).all()
-    products = Products.query.filter_by(productid=OrderDetails.productid).all()
 
     ordered_products = {}
     for order in orders:
@@ -177,10 +177,73 @@ def profile():
             product = Products.query.filter_by(productid=order_detail.productid).first()
             ordered_products[order_detail.orderdetailid] = {"productid": product.productid , "productname": product.productname,  "unitprice": product.price, "quantity": order_detail.quantity, "createdat": order_detail.createdat}
 
-    print(orders, order_details, products)
-    print("*******************************************************************")
-    print(ordered_products)
     return render_template("customer.html", customer=customer, orders=ordered_products)
+
+@main.route("/customer/reset", methods=["POST"])
+@login_required
+def changePassword():
+    customers = Customers.query.filter_by(customerid=current_user.customerid).first()
+    previous_password = request.form.get('previous_password')
+    new_password = request.form.get('new_password')
+    if previous_password == '':
+            previous_password = None
+
+    if previous_password is None or check_password_hash(customers.password, previous_password):
+        if new_password == '':
+            customers.password = None
+            db.session.commit()
+            return redirect(url_for("main.index"))
+        customers.password = generate_password_hash(new_password, method="pbkdf2:sha256")
+        db.session.commit()
+        return redirect(url_for("main.index"))
+    else:
+        return redirect(url_for("main.index"))
+
+@main.route("/customer/edit", methods=["POST"])
+@login_required
+def editCustomer():
+    customer = Customers.query.filter_by(customerid=current_user.customerid).first()
+    new_name = request.form.get('new_name')
+    new_contact = request.form.get('new_contact')
+    new_address = request.form.get('new_address')
+    new_postalcode = request.form.get('new_postalcode')
+    new_city = request.form.get('new_city')
+    new_country = request.form.get('new_country')
+    
+    if new_name != '':
+        customer.customername = new_name
+    else:
+        customer.customername = None
+    if new_contact != '':
+        customer.contactname = new_contact
+    else:
+        customer.contactname = None
+    if new_address != '':
+        customer.address = new_address
+    else:
+        customer.address = None
+    if new_postalcode != '':
+        customer.postalcode = new_postalcode
+    else:
+        customer.postalcode = None
+    if new_city != '':
+        customer.city = new_city
+    else:
+        customer.city = None
+    if new_country != '':
+        customer.country = new_country
+    else:
+        customer.country = None
+
+    db.session.commit()
+    return redirect(url_for("main.customer"))
+
+@main.route("/customer/delete/<order_detail_id>", methods=["POST"])
+@login_required
+def deleteOrder(order_detail_id):
+    OrderDetails.query.filter(OrderDetails.orderdetailid == order_detail_id).delete()
+    db.session.commit()
+    return redirect(url_for("main.customer"))
 
 # Test database and check connection
 @main.route('/database/', methods=['GET'])
@@ -210,14 +273,7 @@ def database():
         pass
     elif table == 'suppliers':
         suppliers = Suppliers.query.all()
-        return {"suppliers": [s.to_dict() for s in suppliers]}
-    # elif table == 'users':
-    #     users = User.query.all()
-    #     return {"users": [u.to_dict() for u in users]}
-    # elif table == 'all':
-    #     return {"users": [u.username for u in User.query.all()], "products": [p.productname for p in Products.query.all()]}    
-
-
+        return {"suppliers": [s.to_dict() for s in suppliers]}   
 
 # Socket.IO endpoints
 

@@ -145,12 +145,13 @@
                 <p><strong>Unit Price:</strong> {{ value.unitprice }}</p>
                 <p><strong>Quantity:</strong> {{ value.quantity }}</p>
                 <p><strong>Order Placed on:</strong> {{ value.createdat }}</p>
-                <button class="btn ghost delete-order" data-orderid="{{ key }}">Delete</button>
+                <form action="/customer/delete/{{ key }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn ghost delete-order">Delete</button>
+                </form>
             </div>
         {% endfor %}
         </div>
         {% endif %}
-
   </main>
 
   <!-- Edit Info Modal -->
@@ -184,9 +185,9 @@
       <h2>Change Password</h2>
       <form action="/customer/reset" method="post">
         <label for="previous_password">Previous Password</label>
-        <input type="password" name="previous_password" required />
+        <input type="password" name="previous_password"/>
         <label for="new_password">New Password</label>
-        <input type="password" name="new_password" required />
+        <input type="password" name="new_password"/>
         <div class="actions">
           <button type="button" class="btn ghost" id="change-password-cancel">Cancel</button>
           <button type="submit" class="btn primary">Change</button>

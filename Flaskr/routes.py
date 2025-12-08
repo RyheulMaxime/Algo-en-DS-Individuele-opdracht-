@@ -9,14 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 main = Blueprint('main', __name__)
 
-# not sure if needed
-def sort_alphabetically(products, sorting_system):
-    pass
-
-# not sure if needed
-def sort_by_price(products, sorting_system):
-    pass
-
+# Helper functions
 def sort_by_category(products):
     categorties = Categories.query.all()
     sorted_products = {}
@@ -58,11 +51,8 @@ def index():
 
     products = Products.query.all()
     sorting_system = request.args.get('sorting_system')
-    # print("************************** sorting system: ", sorting_system)
     if sorting_system is None:
-        return render_template('index.html', products=products, sorting_system=sorting_system)
-        # sorting_system = "Category"
-    # print("************************** sorting system: ", sorting_system)
+        return render_template('index.html',customer=user, products=products, sorting_system=sorting_system)
 
     if products is not None:
         sorted_products = None
@@ -78,18 +68,13 @@ def index():
         elif sorting_system.lower() == "name_desc":
             sorted_products = sorted(products, key=lambda p: p.productname, reverse=True)
         if sorted_products is not None:
-            # print(sorted_products)
-            return render_template('index.html', products=sorted_products, sorting_system=sorting_system, customer=user)
-        return render_template('index.html', products=products, sorting_system=sorting_system, customer=user)
-    return render_template('index.html', products=None, customer=user)
+            return render_template('index.html',customer=user, products=sorted_products, sorting_system=sorting_system)
+        return render_template('index.html',customer=user, products=products, sorting_system=sorting_system)
+    return render_template('index.html', customer=user, products=None)
 
-# @main.route('/product/<productId>', methods=['GET'])
-@main.route('/product', methods=['GET', 'POST'])
+@main.route('/product', methods=['GET'])
+# @main.route('/product', methods=['GET', 'POST'])
 def product(product_id=None):
-    # try:
-    #     product_id = request.args.get('id')
-    # except Exception as e:
-    #     print(e)
     product_id = request.args.get('id')
     supplier_id = request.args.get('supplierid')
     category_id = request.args.get('categoryid')
@@ -129,7 +114,6 @@ def register():
                 customer_info[key] = None
             else:
                 customer_info[key] = info
-        # print(customer_info)
 
         if Customers.query.filter_by(customername=customer_info['username']).first():
             return render_template("sign_up.html", error="Username already taken!")
@@ -167,10 +151,8 @@ def login():
             login_user(customer)
             return redirect(url_for("main.index"))
         else:
-            socketio.emit('login_failed', {'username': username})
-            return
-
-    return render_template("index.html")
+            return render_template("login.html", error="Invalid username or password")
+    return render_template("login.html")
 
 # Logout route
 @main.route("/logout")
@@ -179,6 +161,26 @@ def logout():
     logout_user()
     return redirect(url_for("main.index"))
 
+@main.route("/customer", methods=["GET"])
+@login_required
+def profile():
+    customer = Customers.query.filter_by(customerid=current_user.customerid).first()
+    
+    orders = Orders.query.filter_by(customerid=current_user.customerid).all()
+    order_details = OrderDetails.query.filter_by(orderid=Orders.orderid).all()
+    products = Products.query.filter_by(productid=OrderDetails.productid).all()
+
+    ordered_products = {}
+    for order in orders:
+        order_details = OrderDetails.query.filter_by(orderid=order.orderid).all()
+        for order_detail in order_details:
+            product = Products.query.filter_by(productid=order_detail.productid).first()
+            ordered_products[order_detail.orderdetailid] = {"productid": product.productid , "productname": product.productname,  "unitprice": product.price, "quantity": order_detail.quantity, "createdat": order_detail.createdat}
+
+    print(orders, order_details, products)
+    print("*******************************************************************")
+    print(ordered_products)
+    return render_template("customer.html", customer=customer, orders=ordered_products)
 
 # Test database and check connection
 @main.route('/database/', methods=['GET'])
@@ -215,6 +217,8 @@ def database():
     # elif table == 'all':
     #     return {"users": [u.username for u in User.query.all()], "products": [p.productname for p in Products.query.all()]}    
 
+
+
 # Socket.IO endpoints
 
 # Send message to console of the client
@@ -222,30 +226,3 @@ def database():
 def handle_message(data):
     print('received message: ' + data)
 
-
-@socketio.on('order')
-def handle_message(data):
-    
-    place_order(data['productid'], data['quantity'])
-
-@socketio.on('login')
-def handle_message(data):  
-    print(data)
-    username = data['customer']
-    password = data['password']
-
-    customer = Customers.query.filter_by(customername=username).first()
-
-    if password == '':
-        password = None
-
-    print(username, password)
-    if customer and password == customer.password:
-        login_user(customer)
-        return redirect(url_for("main.index"))  
-    elif customer and check_password_hash(customer.password, password):
-        login_user(customer)
-        return redirect(url_for("main.index"))
-    else:
-        socketio.emit('login_failed', {'username': username})
-        return

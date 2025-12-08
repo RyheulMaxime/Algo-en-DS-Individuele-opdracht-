@@ -250,7 +250,9 @@
         {% else %}
           <button id="user-button" class="dropbtn" aria-expanded="false">Account</button>
           <div class="dropdown-content" role="menu" aria-label="Account menu">
-            <button id="open-login" type="button">Login</button>
+            <!-- For later does not seam to work with socket, login_user not alowed trough socket.io -->
+            <!-- <button id="open-login" type="button">Login</button> -->
+            <a role="menuitem" href="/login">Login</a>
             <a role="menuitem" href="/register">Register</a>
           </div>
         {% endif %}
@@ -296,7 +298,7 @@
           <h2 style="grid-column:1/-1;margin:.25rem 0 .5rem;color:var(--muted);font-size:.95rem">{{ key }}</h2>
           {% for product in value %}
             <!-- product card is an anchor to make it semantic and keyboard friendly -->
-            <a class="product js-product" href="/product?id={{ product.productid }}"
+            <a class="product js-product" href="/product?id={{ product.productid }}&supplierid={{ product.supplierid }}&categoryid={{ product.categoryid }}"
                data-id="{{ product.productid }}"
                data-supplier="{{ product.supplierid }}"
                data-category="{{ product.categoryid }}"
@@ -310,7 +312,7 @@
         {% endfor %}
       {% elif products %}
         {% for product in products %}
-          <a class="product js-product" href="/product?id={{ product.productid }}"
+          <a class="product js-product" href="/product?id={{ product.productid }}&supplierid={{ product.supplierid }}&categoryid={{ product.categoryid }}"
              data-id="{{ product.productid }}"
              data-supplier="{{ product.supplierid }}"
              data-category="{{ product.categoryid }}"
@@ -430,13 +432,13 @@
         });
       }
 
+      
+      // ************************************** No Used *******************************************************
       // navigation helper (keeps previous behaviour if needed)
-      function navigateToProduct(id, supplier, category) {
-        if (!id) return;
-        window.location.href = '/product?id=' + encodeURIComponent(id)
-          + (supplier ? '&supplierid=' + encodeURIComponent(supplier) : '')
-          + (category ? '&categoryid=' + encodeURIComponent(category) : '');
-      }
+      // function navigateToProduct(id, supplier, category) {
+      //   if (!id) return;
+      //   window.location.href = '/product?id=' + encodeURIComponent(id) + (supplier ? '&supplierid=' + encodeURIComponent(supplier) : '') + (category ? '&categoryid=' + encodeURIComponent(category) : '');
+      // }
 
       // Sorting helper
       function applySorting() {
@@ -476,6 +478,7 @@
         const first = el.querySelector('input, button, [tabindex]:not([tabindex="-1"])');
         if (first) first.focus();
       }
+
       function closeOverlay(el) {
         if (!el) return;
         el.classList.remove('open');
@@ -514,57 +517,57 @@
       });
 
       // login submit handling
-      if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const username = (document.getElementById('username') || {}).value || '';
-          const password = (document.getElementById('password') || {}).value || '';
-          // if (!username || !password) {  // Pasword not required
-          if (!username) {
-            // quick client validation -> show error
-            const errMsg = document.getElementById('error-message');
-            if (errMsg) errMsg.textContent = 'Please enter username.';
-            openOverlay(errorOverlay);
-            return;
-          }
+      // if (loginForm) {
+      //   loginForm.addEventListener('submit', (e) => {
+      //     e.preventDefault();
+      //     const username = (document.getElementById('username') || {}).value || '';
+      //     const password = (document.getElementById('password') || {}).value || '';
+      //     // if (!username || !password) {  // Pasword not required
+      //     if (!username) {
+      //       // quick client validation -> show error
+      //       const errMsg = document.getElementById('error-message');
+      //       if (errMsg) errMsg.textContent = 'Please enter username.';
+      //       openOverlay(errorOverlay);
+      //       return;
+      //     }
 
-          if (socket && socket.connected) {
-            socket.emit('login', { customer: username, password: password });
-          } else {
-            // fallback: simulate login failure if socket not available
-            const errMsg = document.getElementById('error-message');
-            if (errMsg) errMsg.textContent = 'Unable to contact login server. Try again later.';
-            openOverlay(errorOverlay);
-          }
-        });
-      }
+      //     if (socket && socket.connected) {
+      //       socket.emit('login', { customer: username, password: password });
+      //     } else {
+      //       // fallback: simulate login failure if socket not available
+      //       const errMsg = document.getElementById('error-message');
+      //       if (errMsg) errMsg.textContent = 'Unable to contact login server. Try again later.';
+      //       openOverlay(errorOverlay);
+      //     }
+      //   });
+      // }
 
       // Socket event handlers
-      if (socket) {
-        // server-side should emit login_failed with an optional message
-        socket.on('login_failed', (payload) => {
-          const message = (payload && payload.message) ? payload.message : 'Unable to log in. Please check your credentials.';
-          const errMsg = document.getElementById('error-message');
-          if (errMsg) errMsg.textContent = message;
-          openOverlay(errorOverlay);
-        });
+      // if (socket) {
+      //   // server-side should emit login_failed with an optional message
+      //   socket.on('login_failed', (payload) => {
+      //     const message = (payload && payload.message) ? payload.message : 'Unable to log in. Please check your credentials.';
+      //     const errMsg = document.getElementById('error-message');
+      //     if (errMsg) errMsg.textContent = message;
+      //     openOverlay(errorOverlay);
+      //   });
 
-        // server-side should emit login_success with optional redirect
-        socket.on('login_success', (payload) => {
-          closeOverlay(loginOverlay);
-          // if server sends redirect URL, go there, otherwise reload or go to profile
-          if (payload && payload.redirect) {
-            window.location.href = payload.redirect;
-          } else {
-            window.location.href = '/customer';
-          }
-        });
+      //   // // server-side should emit login_success with optional redirect
+      //   // socket.on('login_success', (payload) => {
+      //   //   closeOverlay(loginOverlay);
+      //   //   // if server sends redirect URL, go there, otherwise reload or go to profile
+      //   //   if (payload && payload.redirect) {
+      //   //     window.location.href = payload.redirect;
+      //   //   } else {
+      //   //     window.location.href = '/customer';
+      //   //   }
+      //   // });
 
-        // handle socket connection errors gracefully
-        socket.on('connect_error', () => {
-          console.warn('Socket connection error');
-        });
-      }
+      //   // handle socket connection errors gracefully
+      //   socket.on('connect_error', () => {
+      //     console.warn('Socket connection error');
+      //   });
+      // }
 
       // --- Event listeners for search/sort/products ---
       if (searchInput) {

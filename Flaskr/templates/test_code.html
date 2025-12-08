@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AL&DS Shop — Home</title>
   <meta name="description" content="AL&DS Shop — premium, responsive product listing" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png">
 
   <!-- Basic, self-contained styling for the homepage -->
   <style>
@@ -185,6 +187,41 @@
     @media (prefers-reduced-motion: reduce){
       .product{ transition:none }
     }
+
+    .dropbtn {
+      background-color: #04AA6D;
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {background-color: #ddd;}
+
+    .dropdown:hover .dropdown-content {display: block;}
+
+    .dropdown:hover .dropbtn {background-color: #3e8e41;}
   </style>
 </head>
 <body>
@@ -192,6 +229,26 @@
   <header class="site-header" role="banner">
     <h1 class="brand">AL&amp;DS Shop</h1>
     <p class="tagline">Curated products — clean design, delightful shopping</p>
+    {% if customer %}
+      <div class="dropdown">
+        <g id="down_arrow_svg" clip-path="url(#clip-path)">
+          <path stroke="#fff" fill="#12FF12" id="path" d="M18.71,8.21a1,1,0,0,0-1.42,0l-4.58,4.58a1,1,0,0,1-1.42,0L6.71,8.21a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.59,4.59a3,3,0,0,0,4.24,0l4.59-4.59A1,1,0,0,0,18.71,8.21Z" fill-rule="evenodd" opacity="0.54"/>
+        </g>
+        <button class="dropbtn">{{ customer.customername }}</button>
+        <div class="dropdown-content">
+          <a href="/customer">Customer Profile</a>
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+    {% else %}
+      <div class="dropdown">
+        <button class="dropbtn">Dropdown</button>
+        <div class="dropdown-content">
+          <p onclick=showLoginModal()>Login</p>
+          <a href="/register">Register</a>
+        </div>
+      </div>
+    {% endif %}
   </header>
 
   <!-- Controls (search + sort) -->
@@ -273,7 +330,22 @@
     <div id="empty-state-js" class="empty-state" style="display:none">No products found.</div>
   </main>
 
+  <div id="login-modal" class="login-modal" role="dialog" aria-modal="true">
+      <div class="modal">
+          <h1>Login to your account</h1>
+
+          <form class="js-login-form">
+              <label for="username">Username:</label>
+              <input id="username" type="text" name="username" required />
+              <label for="password">Password:</label>
+              <input id="password" type="password" name="password"/>
+              <button type="submit" onclick=loginUser()>Login</button>
+          </form>
+      </div>
+  </div>
+
   <!-- Scripts -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script>
     (function(){
       // DOM references
@@ -324,13 +396,14 @@
       }
 
       // Navigation stub - adapt to real routing in your app
-      function navigateToProduct(id, supplier, category){
-        if(!id) return;
-        // Example: client-side route (or server route)
-        // window.location.href = '/product/' + encodeURIComponent(id);
-        // We choose a query param path to match earlier examples:
-        window.location.href = '/product?id=' + encodeURIComponent(id) + '&supplierid=' + encodeURIComponent(supplier) + '&categoryid=' + encodeURIComponent(category);
-      }
+      // ************************************** No Used *******************************************************
+      // function navigateToProduct(id, supplier, category){
+      //   if(!id) return;
+      //   // Example: client-side route (or server route)
+      //   // window.location.href = '/product/' + encodeURIComponent(id);
+      //   // We choose a query param path to match earlier examples:
+      //   window.location.href = '/product?id=' + encodeURIComponent(id) + '&supplierid=' + encodeURIComponent(supplier) + '&categoryid=' + encodeURIComponent(category);
+      // }
 
       // Sorting: send user to backend with sorting param
       function applySorting(){
@@ -354,19 +427,30 @@
         // applySorting();
       });
 
+      function loginUser(){
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        socket.emit("login", {customer: username , password:  password});
+        closeLoginModal();
+      }
+      
+      // Modal functions
+      function showLoginModal(){
+        document.getElementById("login-modal").style.display = "block";
+      }
+
+      function closeLoginModal(){
+        document.getElementById("login-modal").style.display = "none";
+      }
+
       // Initial bindings
       bindProductInteractions();
 
       // Run an initial filter pass to set state and live region
       filterProductsBySearch(searchInput.value || '');
-
-      // Expose for console debugging (only in dev)
-    //   window.__ALDS = {
-    //     filterProductsBySearch,
-    //     getProductNodes,
-    //     navigateToProduct
-    //   };
     })();
+
+    
   </script>
 </body>
 </html>

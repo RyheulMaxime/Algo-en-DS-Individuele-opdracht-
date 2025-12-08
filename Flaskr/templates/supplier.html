@@ -137,7 +137,7 @@
             <div class="product-list">
                 {% for product in products %}
                 <a class="product"
-                    href="/product?id={{ product.productid }}"
+                    href="/product?id={{ product.productid }}&supplierid={{ product.supplierid }}&categoryid={{ product.categoryid }}"
                     data-id="{{ product.productid }}"
                     data-supplier="{{ product.supplierid }}">
                     <p class="title">{{ product.productname }}</p>

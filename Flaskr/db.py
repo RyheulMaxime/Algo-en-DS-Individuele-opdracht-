@@ -86,6 +86,7 @@ class OrderDetails(db.Model):
     orderid = db.Column(db.Integer, primary_key=False)
     productid = db.Column(db.Integer, primary_key=False)
     quantity = db.Column(db.Integer, primary_key=False)
+    createdat = db.Column(db.Date, primary_key=False)
     
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

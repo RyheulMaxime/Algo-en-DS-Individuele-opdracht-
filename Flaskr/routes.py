@@ -6,7 +6,7 @@ from flask_socketio import emit # <-- Only import emit
 from . import socketio, login_manager   # import socketio from the app package
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -88,17 +88,12 @@ def product(product_id=None):
         quantity = request.form.get('quantity')
 
         if current_user.is_authenticated:
-            print("place order")
             new_order_id = Orders.query.order_by(Orders.orderid.desc()).first().orderid + 1
             customer_id = current_user.customerid
-            new_order = Orders(orderid = new_order_id, customerid=customer_id, employeeid=None, orderdate=datetime.date.today(), shipperid=None, delivered=False)
+            new_order = Orders(orderid = new_order_id, customerid=customer_id, orderdate=datetime.today().strftime('%Y-%m-%d'), employeeid=None, shipperid=None, delivered=False, createdat=datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
             db.session.add(new_order)
-            # db.session.commit()
-            print(quantity)
-
             new_order_details_id = OrderDetails.query.order_by(OrderDetails.orderdetailid.desc()).first().orderdetailid + 1
-            new_order_details = OrderDetails(orderdetailid = new_order_details_id, orderid=new_order_id, productid=product_id, quantity=quantity)
-            
+            new_order_details = OrderDetails(orderdetailid = new_order_details_id, orderid=new_order_id, productid=product_id, quantity=quantity, createdat=datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
             db.session.add(new_order_details)
             db.session.commit()
             return redirect(url_for('main.index'))
@@ -197,7 +192,7 @@ def customer():
         order_details = OrderDetails.query.filter_by(orderid=order.orderid).all()
         for order_detail in order_details:
             product = Products.query.filter_by(productid=order_detail.productid).first()
-            ordered_products[order_detail.orderdetailid] = {"productid": product.productid , "productname": product.productname,  "unitprice": product.price, "quantity": order_detail.quantity, "createdat": order_detail.createdat}
+            ordered_products[order_detail.orderdetailid] = {"productid": product.productid , "productname": product.productname,  "unitprice": product.price, "quantity": order_detail.quantity, "createdat": order.orderdate}
 
     return render_template("customer.html", customer=customer, orders=ordered_products)
 

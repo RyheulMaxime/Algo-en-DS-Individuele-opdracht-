@@ -102,6 +102,7 @@ def supplier(supplier_id=None):
     supplier_id = request.args.get('id')
     
     if supplier_id is None:
+        # TODO return to index with error
         return render_template('supplier.html', supplier=None)
     
     supplier_info = Suppliers.query.get(int(supplier_id))
@@ -112,31 +113,22 @@ def supplier(supplier_id=None):
 @main.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        # because of request form didn't find a way po put in ceparate function
         customer_info = {"username": None, "password": None, "contact_name": None, "address": None, "city": None, "postal_code": None, "country": None}
-
         for key, value in customer_info.items():
             info = request.form.get(key)
-            if info == "":
-                customer_info[key] = None
-            else:
-                customer_info[key] = info
+            customer_info[key] = info if info != "" else None
 
         if Customers.query.filter_by(customername=customer_info['username']).first():
             return render_template("sign_up.html", error="Username already taken!")
         
         customer_id = Customers.query.order_by(Customers.customerid.desc()).first().customerid + 1
-        if customer_info['password'] is not None:
-            hashed_password = generate_password_hash(customer_info['password'], method="pbkdf2:sha256")
-            new_user = Customers(customerid=customer_id, customername=customer_info['username'], contactname=customer_info['contact_name'], address=customer_info['address'], city=customer_info['city'], postalcode=customer_info['postal_code'], country=customer_info['country'], password=hashed_password)
-        else:
-            new_user = Customers(customerid=customer_id, customername=customer_info['username'], contactname=customer_info['contact_name'], address=customer_info['address'], city=customer_info['city'], postalcode=customer_info['postal_code'], country=customer_info['country'], password=customer_info['password'])
+        customer_info['password'] = customer_info['password'] if customer_info['password'] == None else generate_password_hash(customer_info['password'], method="pbkdf2:sha256")
+        
+        new_user = Customers(customerid=customer_id, customername=customer_info['username'], contactname=customer_info['contact_name'], address=customer_info['address'], city=customer_info['city'], postalcode=customer_info['postal_code'], country=customer_info['country'], password=customer_info['password'])
 
         db.session.add(new_user)
         db.session.commit()
-
         return redirect(url_for("main.login"))
-    
     return render_template("sign_up.html")
 
 # Login user route
@@ -151,12 +143,9 @@ def login():
         if password == '':
             password = None
 
-        if customer and password == customer.password:
+        if (customer and password is None and customer.password is None) or (password is not None and customer and check_password_hash(customer.password, password)):
             login_user(customer)
             return redirect(url_for("main.index"))  
-        elif customer and check_password_hash(customer.password, password):
-            login_user(customer)
-            return redirect(url_for("main.index"))
         else:
             return render_template("login.html", error="Invalid username or password")
     return render_template("login.html")
@@ -203,6 +192,7 @@ def change_password():
         db.session.commit()
         return redirect(url_for("main.index"))
     else:
+        # TODO: add error message
         return redirect(url_for("main.index"))
 
 # Change user info
@@ -222,10 +212,7 @@ def edit_customer():
     }
 
     for form_field, db_column in field_map.items():
-        # Get value from request
         new_value = request.form.get(form_field)
-        
-        # logic: if empty string, set to None, otherwise use the value
         final_value = new_value if new_value != "" else None
         
         # Dynamically set the attribute on the customer object
@@ -242,6 +229,7 @@ def delete_order(order_detail_id):
     db.session.commit()
     return redirect(url_for("main.customer"))
 
+# TODO: disable database get
 # Test database and check connection
 @main.route('/database/', methods=['GET'])
 def database():
@@ -272,6 +260,7 @@ def database():
         suppliers = Suppliers.query.all()
         return {"suppliers": [s.to_dict() for s in suppliers]}   
 
+# TODO: check need socketio?
 # Socket.IO endpoints
 
 # Send message to console of the client

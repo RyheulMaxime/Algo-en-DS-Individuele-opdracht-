@@ -38,7 +38,6 @@
                 const isExpanded = userButton.getAttribute('aria-expanded') === 'true';
                 toggleDropdown(!isExpanded);
             });
-
             document.addEventListener('click', (e) => {
                 if (!userDropdown.contains(e.target)) {
                 toggleDropdown(false);
@@ -46,9 +45,8 @@
             });
             }
 
-            function toggleDropdown(shouldOpen) {
+        function toggleDropdown(shouldOpen) {
             if (!userDropdown || !userButton) return;
-            
             if (shouldOpen) {
                 userDropdown.classList.add('is-open');
                 userButton.setAttribute('aria-expanded', 'true');

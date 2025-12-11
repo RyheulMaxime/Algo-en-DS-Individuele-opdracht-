@@ -47,32 +47,7 @@
 </head>
 
 <body>
-    <header class="site-header" role="banner">
-        <a class="site-header__brand" href="/" aria-label="Return to Home">AL&amp;DS Shop</a>
-        <p class="site-header__tagline">Curated products — clean design, delightful shopping</p>
-
-        <div class="user-menu" aria-hidden="false">
-            <div id="user-dropdown" class="user-menu__dropdown" aria-haspopup="true">
-                {% if customer %}
-                    <button id="user-button" class="user-menu__trigger" aria-expanded="false">
-                        {{ customer.customername }}
-                    </button>
-                    <div class="user-menu__content" role="menu" aria-label="User menu">
-                        <a role="menuitem" class="user-menu__link" href="/customer">Customer Profile</a>
-                        <a role="menuitem" class="user-menu__link" href="/logout">Logout</a>
-                    </div>
-                {% else %}
-                    <button id="user-button" class="user-menu__trigger" aria-expanded="false">
-                        Account
-                    </button>
-                    <div class="user-menu__content" role="menu" aria-label="Account menu">
-                        <a role="menuitem" class="user-menu__link" href="/login">Login</a>
-                        <a role="menuitem" class="user-menu__link" href="/register">Register</a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </header>
+    {% include 'header.html' %}
 
     <main class="profile-layout" role="main"> {% if supplier %}
             
@@ -136,27 +111,7 @@
         (function(){
             'use strict';
 
-            // --- 1. Dropdown Logic ---
-            const dropdown = document.getElementById('user-dropdown');
-            const dropdownBtn = document.getElementById('user-button');
-            
-            if (dropdownBtn && dropdown) {
-                dropdownBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    dropdown.classList.toggle('is-open');
-                    const expanded = dropdownBtn.getAttribute('aria-expanded') === 'true';
-                    dropdownBtn.setAttribute('aria-expanded', String(!expanded));
-                });
-
-                document.addEventListener('click', (e) => {
-                    if (!dropdown.contains(e.target)) {
-                        dropdown.classList.remove('is-open');
-                        dropdownBtn.setAttribute('aria-expanded', 'false');
-                    }
-                });
-            }
-
-            // --- 2. Map Logic ---
+            // --- Map Logic ---
             const el = document.getElementById("supplier-data");
             const mapContainer = document.getElementById("map");
             

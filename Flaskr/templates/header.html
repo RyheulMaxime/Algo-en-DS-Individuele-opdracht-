@@ -1,0 +1,61 @@
+<!-- header code for each web page -->
+<header class="site-header" role="banner">
+    <a class="site-header__brand" href="/" aria-label="Go to homepage">AL&amp;DS Shop</a>
+    <p class="site-header__tagline">Curated products — clean design, delightful shopping</p>
+
+    <div class="user-menu" aria-hidden="false">
+        <div id="user-dropdown" class="user-menu__dropdown" aria-haspopup="true">
+        {% if customer %}
+            <button id="btn-user-menu" class="user-menu__trigger" aria-expanded="false">
+            {{ customer.customername }}
+            </button>
+            <div class="user-menu__content" role="menu" aria-label="User menu">
+            <a role="menuitem" class="user-menu__link" href="/customer">Customer Profile</a>
+            <a role="menuitem" class="user-menu__link" href="/logout">Logout</a>
+            </div>
+        {% else %}
+            <button id="btn-user-menu" class="user-menu__trigger" aria-expanded="false">
+            Account
+            </button>
+            <div class="user-menu__content" role="menu" aria-label="Account menu">
+            <a role="menuitem" class="user-menu__link" href="/login">Login</a>
+            <a role="menuitem" class="user-menu__link" href="/register">Register</a>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</header>
+<script>
+    (function () {
+      'use strict';
+        // --- Dropdown Logic ---
+        const userDropdown = document.getElementById('user-dropdown');
+        const userButton = document.getElementById('btn-user-menu');
+        
+        if (userButton && userDropdown) {
+            userButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isExpanded = userButton.getAttribute('aria-expanded') === 'true';
+                toggleDropdown(!isExpanded);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userDropdown.contains(e.target)) {
+                toggleDropdown(false);
+                }
+            });
+            }
+
+            function toggleDropdown(shouldOpen) {
+            if (!userDropdown || !userButton) return;
+            
+            if (shouldOpen) {
+                userDropdown.classList.add('is-open');
+                userButton.setAttribute('aria-expanded', 'true');
+            } else {
+                userDropdown.classList.remove('is-open');
+                userButton.setAttribute('aria-expanded', 'false');
+            }
+        }
+    })();
+</script>

@@ -12,33 +12,7 @@
   <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-
-  <header class="site-header" role="banner">
-    <a class="site-header__brand" href="/" aria-label="Go to homepage">AL&amp;DS Shop</a>
-    <p class="site-header__tagline">Curated products — clean design, delightful shopping</p>
-
-    <div class="user-menu" aria-hidden="false">
-      <div id="user-dropdown" class="user-menu__dropdown" aria-haspopup="true">
-        {% if customer %}
-          <button id="btn-user-menu" class="user-menu__trigger" aria-expanded="false">
-            {{ customer.customername }}
-          </button>
-          <div class="user-menu__content" role="menu" aria-label="User menu">
-            <a role="menuitem" class="user-menu__link" href="/customer">Customer Profile</a>
-            <a role="menuitem" class="user-menu__link" href="/logout">Logout</a>
-          </div>
-        {% else %}
-          <button id="btn-user-menu" class="user-menu__trigger" aria-expanded="false">
-            Account
-          </button>
-          <div class="user-menu__content" role="menu" aria-label="Account menu">
-            <a role="menuitem" class="user-menu__link" href="/login">Login</a>
-            <a role="menuitem" class="user-menu__link" href="/register">Register</a>
-          </div>
-        {% endif %}
-      </div>
-    </div>
-  </header>
+  {% include 'header.html' %}
 
   <section class="toolbar" aria-label="Search and sort products">
     <form id="search-form" role="search" onsubmit="return false;" aria-label="Search products">
@@ -147,8 +121,7 @@
         sortButton: document.getElementById('btn-sort'),
         resultsCount: document.getElementById('results-count'),
         emptyStateJs: document.getElementById('empty-state-js'),
-        userDropdown: document.getElementById('user-dropdown'),
-        userButton: document.getElementById('btn-user-menu'),
+        
         
         // Modals
         loginOverlay: document.getElementById('modal-login'),
@@ -163,33 +136,6 @@
 
       // Cache product nodes for filtering performance
       let productNodes = Array.from(document.querySelectorAll('.js-product-item'));
-
-      // --- Dropdown Logic ---
-      if (els.userButton && els.userDropdown) {
-        els.userButton.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const isExpanded = els.userButton.getAttribute('aria-expanded') === 'true';
-          toggleDropdown(!isExpanded);
-        });
-
-        document.addEventListener('click', (e) => {
-          if (!els.userDropdown.contains(e.target)) {
-            toggleDropdown(false);
-          }
-        });
-      }
-
-      function toggleDropdown(shouldOpen) {
-        if (!els.userDropdown || !els.userButton) return;
-        
-        if (shouldOpen) {
-          els.userDropdown.classList.add('is-open');
-          els.userButton.setAttribute('aria-expanded', 'true');
-        } else {
-          els.userDropdown.classList.remove('is-open');
-          els.userButton.setAttribute('aria-expanded', 'false');
-        }
-      }
 
       // --- Product Search ---
       function normalizeStr(str) {

@@ -10,7 +10,9 @@ from datetime import datetime
 
 main = Blueprint('main', __name__)
 
+# //////////////////////////////////////
 # Helper functions
+# //////////////////////////////////////
 def sort_by_category(products):
     categorties = Categories.query.all()
     sorted_products = {}
@@ -20,46 +22,16 @@ def sort_by_category(products):
         for category in categorties:
             if product.categoryid == category.categoryid:
                 sorted_products[category.categoryname].append(product)
-    # print(sorted_products)
     return sorted_products
 
-# Order functions
-def place_order(product_id, quantity):
-    order_success = False
-    print("place_order")
-    print(product_id, quantity)
-    
-    # ad logics to place an order
-
-    if order_success:
-        return "Order placed successfully"
-    else:
-        socketio.emit('order_failed', {'productid': product_id})
-        return "Order failed"
-
-# Account user functions
-# Load user for Flask-Login
-@login_manager.user_loader
-def load_user(user_id):
-    return Customers.query.get(int(user_id))
-
-@main.route('/', methods=['GET'])
-def index():
-    user = None
-    if current_user.is_authenticated:
-        # print("user logged in")
-        user = current_user
-
+def get_products(sorting_system):
     products = Products.query.all()
-    sorting_system = request.args.get('sorting_system')
-    if sorting_system is None:
-        return render_template('index.html',customer=user, products=products, sorting_system=sorting_system)
-
-    if products is not None:
+    if products is None:
+        return None
+    elif sorting_system is not None:
         sorted_products = None
         if sorting_system.lower() == "category":
             sorted_products = sort_by_category(products)
-            # sorted_products = sorted(products, key=lambda p: p.category)
         elif sorting_system.lower() == "price_asc":
             sorted_products = sorted(products, key=lambda p: p.price)
         elif sorting_system.lower() == "price_desc":
@@ -69,24 +41,43 @@ def index():
         elif sorting_system.lower() == "name_desc":
             sorted_products = sorted(products, key=lambda p: p.productname, reverse=True)
         if sorted_products is not None:
-            return render_template('index.html',customer=user, products=sorted_products, sorting_system=sorting_system)
-        return render_template('index.html',customer=user, products=products, sorting_system=sorting_system)
-    return render_template('index.html', customer=user, products=None)
+            return sorted_products
+    return products
+
+
+# ///////////////////////////////////////////////
+# Account user functions
+# ///////////////////////////////////////////////
+
+# Load user for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    return Customers.query.get(int(user_id))
+
+def get_current_user():
+    if current_user.is_authenticated:
+        return current_user
+    return None
+
+# /////////////////////////////////////////////////
+# Routes
+# /////////////////////////////////////////////////
+@main.route('/', methods=['GET'])
+def index():
+    user = get_current_user()
+    sorting_system = request.args.get('sorting_system')
+    products = get_products(sorting_system)
+    return render_template('index.html', customer=user, products=products, sorting_system=sorting_system)
 
 @main.route('/product', methods=['GET', 'POST'])
-# @main.route('/product', methods=['GET', 'POST'])
 def product(product_id=None):
-    user = None
-    if current_user.is_authenticated:
-        user = current_user
+    user = get_current_user()
     product_id = request.args.get('id')
     supplier_id = request.args.get('supplierid')
     category_id = request.args.get('categoryid')
     
-
     if request.method == "POST":
         quantity = request.form.get('quantity')
-
         if current_user.is_authenticated:
             new_order_id = Orders.query.order_by(Orders.orderid.desc()).first().orderid + 1
             customer_id = current_user.customerid
@@ -97,40 +88,36 @@ def product(product_id=None):
             db.session.add(new_order_details)
             db.session.commit()
             return redirect(url_for('main.index'))
-
     
     if product_id is None or supplier_id is None or category_id is None:
         return render_template('product.html', product=None)
     product_info = Products.query.get((int(product_id), int(supplier_id), int(category_id)))
     supplier_info = Suppliers.query.get(int(supplier_id))
     category_info = Categories.query.get(int(category_id))
-    return render_template('product.html', user=user, product=product_info, supplier = supplier_info, category = category_info)
+    return render_template('product.html', customer=user, product=product_info, supplier = supplier_info, category = category_info)
 
-
-@main.route('/supplier', methods=['GET', 'POST'])
+@main.route('/supplier', methods=['GET'])
 def supplier(supplier_id=None):
+    user = get_current_user()
     supplier_id = request.args.get('id')
-    # make funtion to return to previous page and give error message as popup
+    
     if supplier_id is None:
         return render_template('supplier.html', supplier=None)
     
     supplier_info = Suppliers.query.get(int(supplier_id))
     supplier_products = Products.query.filter_by(supplierid=supplier_id).all()
-    print("supplier info: ", supplier_info)
-    print(supplier_info.longitude, supplier_info.latitude)
-    return render_template('supplier.html', supplier=supplier_info, products=supplier_products)
+    return render_template('supplier.html',customer=user, supplier=supplier_info, products=supplier_products)
 
-# Register route
+# Register user route
 @main.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        # because of request form didn't find a way po put in ceparate function
         customer_info = {"username": None, "password": None, "contact_name": None, "address": None, "city": None, "postal_code": None, "country": None}
 
         for key, value in customer_info.items():
             info = request.form.get(key)
-            if info is None:
-                pass
-            elif info == "":
+            if info == "":
                 customer_info[key] = None
             else:
                 customer_info[key] = info
@@ -152,7 +139,7 @@ def register():
     
     return render_template("sign_up.html")
 
-# Login route
+# Login user route
 @main.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -174,13 +161,14 @@ def login():
             return render_template("login.html", error="Invalid username or password")
     return render_template("login.html")
 
-# Logout route
+# Logout user route
 @main.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("main.index"))
 
+# Get user info route
 @main.route("/customer", methods=["GET"])
 @login_required
 def customer():
@@ -196,16 +184,17 @@ def customer():
 
     return render_template("customer.html", customer=customer, orders=ordered_products)
 
+# Change user password
 @main.route("/customer/reset", methods=["POST"])
 @login_required
-def changePassword():
+def change_password():
     customers = Customers.query.filter_by(customerid=current_user.customerid).first()
     previous_password = request.form.get('previous_password')
     new_password = request.form.get('new_password')
     if previous_password == '':
             previous_password = None
 
-    if previous_password is None or check_password_hash(customers.password, previous_password):
+    if (previous_password is None and customers.password == None) or (previous_password is not None and customers.password is not None and check_password_hash(customers.password, previous_password)):
         if new_password == '':
             customers.password = None
             db.session.commit()
@@ -216,48 +205,39 @@ def changePassword():
     else:
         return redirect(url_for("main.index"))
 
+# Change user info
 @main.route("/customer/edit", methods=["POST"])
 @login_required
-def editCustomer():
+def edit_customer():
     customer = Customers.query.filter_by(customerid=current_user.customerid).first()
-    new_name = request.form.get('new_name')
-    new_contact = request.form.get('new_contact')
-    new_address = request.form.get('new_address')
-    new_postalcode = request.form.get('new_postalcode')
-    new_city = request.form.get('new_city')
-    new_country = request.form.get('new_country')
     
-    if new_name != '':
-        customer.customername = new_name
-    else:
-        customer.customername = None
-    if new_contact != '':
-        customer.contactname = new_contact
-    else:
-        customer.contactname = None
-    if new_address != '':
-        customer.address = new_address
-    else:
-        customer.address = None
-    if new_postalcode != '':
-        customer.postalcode = new_postalcode
-    else:
-        customer.postalcode = None
-    if new_city != '':
-        customer.city = new_city
-    else:
-        customer.city = None
-    if new_country != '':
-        customer.country = new_country
-    else:
-        customer.country = None
+    # Dictionary mapping: "HTML Form Name" -> "Database Column Name"
+    field_map = {
+        "username": "customername", 
+        "contact_name": "contactname", 
+        "address": "address", 
+        "city": "city", 
+        "postal_code": "postalcode", 
+        "country": "country"
+    }
+
+    for form_field, db_column in field_map.items():
+        # Get value from request
+        new_value = request.form.get(form_field)
+        
+        # logic: if empty string, set to None, otherwise use the value
+        final_value = new_value if new_value != "" else None
+        
+        # Dynamically set the attribute on the customer object
+        setattr(customer, db_column, final_value)
 
     db.session.commit()
     return redirect(url_for("main.customer"))
 
-@main.route("/customer/delete/<order_detail_id>", methods=["POST"])
+# Delete order
+@main.route("/customer/delete/<order_detail_id>", methods=["DELETE"])
 @login_required
-def deleteOrder(order_detail_id):
+def delete_order(order_detail_id):
     OrderDetails.query.filter(OrderDetails.orderdetailid == order_detail_id).delete()
     db.session.commit()
     return redirect(url_for("main.customer"))

@@ -92,7 +92,7 @@
     {% endif %}
   </main>
 
-  customer_info = {"username": None, , "contact_name": None, "address": None, "city": None, "postal_code": None, "country": None}
+  
   <div id="modal-edit-info" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal">
       <h2 class="modal__header">Edit Profile</h2>
@@ -161,26 +161,6 @@
   <script>
     (function(){
       'use strict';
-
-      // --- Dropdown Logic ---
-      const dropdown = document.getElementById('user-dropdown');
-      const dropdownBtn = document.getElementById('user-button');
-      
-      if (dropdownBtn && dropdown) {
-        dropdownBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          dropdown.classList.toggle('is-open');
-          const expanded = dropdownBtn.getAttribute('aria-expanded') === 'true';
-          dropdownBtn.setAttribute('aria-expanded', String(!expanded));
-        });
-
-        document.addEventListener('click', (e) => {
-          if (!dropdown.contains(e.target)) {
-            dropdown.classList.remove('is-open');
-            dropdownBtn.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
 
       // --- Modal Logic ---
       const els = {

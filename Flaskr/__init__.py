@@ -27,7 +27,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 #     }
 # })
 
-socketio = SocketIO()
+# socketio = SocketIO()
 login_manager = LoginManager()
 
 def create_app():
@@ -61,7 +61,7 @@ def create_app():
     from .routes import main
     app.register_blueprint(main)
 
-    socketio.init_app(app, logger=True, engineio_logger=True, cors_allowed_origins="*")
+    # socketio.init_app(app, logger=True, engineio_logger=True, cors_allowed_origins="*")
     
     
     return app

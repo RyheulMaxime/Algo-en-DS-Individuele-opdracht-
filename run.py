@@ -1,5 +1,5 @@
-from flaskr import create_app, socketio
+from flaskr import create_app
+app = create_app()
 
 if __name__ == "__main__":
-    app = create_app()
-    socketio.run(app, debug=True)
+    app.run(debug=True)

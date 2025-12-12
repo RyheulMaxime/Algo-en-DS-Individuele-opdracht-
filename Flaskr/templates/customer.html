@@ -31,19 +31,19 @@
           </div>
           <div class="info-item">
             <span class="info-label">Contact</span>
-            <span class="info-value">{{ customer.contactname }}</span>
+            <span class="info-value">{{ customer.contactname or '' }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Address</span>
-            <span class="info-value">{{ customer.address }}</span>
+            <span class="info-value">{{ customer.address or '' }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">City/Zip</span>
-            <span class="info-value">{{ customer.postalcode }} {{ customer.city }}</span>
+            <span class="info-value">{{ customer.postalcode or '' }} {{ customer.city or '' }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Country</span>
-            <span class="info-value">{{ customer.country }}</span>
+            <span class="info-value">{{ customer.country or '' }}</span>
           </div>
         </div>
 
@@ -98,33 +98,33 @@
       <form action="/customer/edit" method="post">
         <div class="form-group">
           <label class="form-label" for="new_name">Name</label>
-          <input class="form-input" type="text" id="new_name" name="new_name" required value="{{ customer.customername }}"/>
+          <input class="form-input" type="text" id="new_name" name="new_name" required value="{{ customer.customername or '' }}"/>
         </div>
         
         <div class="form-group">
           <label class="form-label" for="new_contact">Contact</label>
-          <input class="form-input" type="text" id="new_contact" name="new_contact" value="{{ customer.contactname }}"/>
+          <input class="form-input" type="text" id="new_contact" name="new_contact" value="{{ customer.contactname or '' }}"/>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="new_address">Address</label>
-          <input class="form-input" type="text" id="new_address" name="new_address" value="{{ customer.address }}"/>
+          <input class="form-input" type="text" id="new_address" name="new_address" value="{{ customer.address or '' }}"/>
         </div>
         
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
           <div class="form-group">
             <label class="form-label" for="new_postalcode">Postal Code</label>
-            <input class="form-input" type="text" id="new_postalcode" name="new_postalcode" value="{{ customer.postalcode }}"/>
+            <input class="form-input" type="text" id="new_postalcode" name="new_postalcode" value="{{ customer.postalcode or '' }}"/>
           </div>
           <div class="form-group">
             <label class="form-label" for="new_city">City</label>
-            <input class="form-input" type="text" id="new_city" name="new_city" value="{{ customer.city }}" />
+            <input class="form-input" type="text" id="new_city" name="new_city" value="{{ customer.city or '' }}" />
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="new_country">Country</label>
-          <input class="form-input" type="text" id="new_country" name="new_country" value="{{ customer.country }}" />
+          <input class="form-input" type="text" id="new_country" name="new_country" value="{{ customer.country or '' }}" />
         </div>
 
         <div class="modal__actions">

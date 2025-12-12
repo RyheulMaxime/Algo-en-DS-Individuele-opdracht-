@@ -2,7 +2,7 @@ Flask
 Flask-SQLAlchemy
 flask_sqlalchemy 
 Flask-Migrate
-flask_socketio
+# flask_socketio
 psycopg2-binary
 flask_login 
 werkzeug

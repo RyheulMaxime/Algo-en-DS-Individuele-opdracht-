@@ -2,8 +2,7 @@ from flask import Blueprint, request, redirect, url_for, render_template, sessio
 from .db import *
 from logging.config import dictConfig
 from flask import current_app
-from flask_socketio import emit # <-- Only import emit
-from . import socketio, login_manager   # import socketio from the app package
+from . import login_manager   # import login_manager from the app package
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -94,7 +93,7 @@ def product(product_id=None):
         return redirect(url_for('main.index', error="You are not logged in."))
     
     if product_id is None or supplier_id is None or category_id is None:
-        return render_template('product.html', product=None)
+        return redirect(url_for("main.index", error="Product not found"))
     product_info = Products.query.get((int(product_id), int(supplier_id), int(category_id)))
     supplier_info = Suppliers.query.get(int(supplier_id))
     category_info = Categories.query.get(int(category_id))
@@ -173,6 +172,7 @@ def customer():
     # Get user info
     customer = Customers.query.filter_by(customerid=current_user.customerid).first()
     orders = Orders.query.filter_by(customerid=current_user.customerid).all()
+    print(customer.address)
 
     ordered_products = {}
     for order in orders:
@@ -180,7 +180,6 @@ def customer():
         for order_detail in order_details:
             product = Products.query.filter_by(productid=order_detail.productid).first()
             ordered_products[order_detail.orderdetailid] = {"productid": product.productid , "productname": product.productname,  "unitprice": product.price, "quantity": order_detail.quantity, "createdat": order.orderdate}
-
     return render_template("customer.html", customer=customer, orders=ordered_products, notice=notice, error=error, confirmation=confirmation)
 
 # Change user password
@@ -268,12 +267,4 @@ def database():
     elif table == 'suppliers':
         suppliers = Suppliers.query.all()
         return {"suppliers": [s.to_dict() for s in suppliers]}   
-
-# TODO: check need socketio?
-# Socket.IO endpoints
-
-# Send message to console of the client
-@socketio.on('message')
-def handle_message(data):
-    print('received message: ' + data)
 

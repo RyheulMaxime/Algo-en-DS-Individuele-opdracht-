@@ -77,7 +77,6 @@ class Orders(db.Model):
     delivered = db.Column(db.Boolean, primary_key=False)
     createdat = db.Column(db.Date, primary_key=False)
     
-    
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 

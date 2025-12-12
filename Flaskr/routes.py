@@ -44,7 +44,6 @@ def get_products(sorting_system):
             return sorted_products
     return products
 
-
 # ///////////////////////////////////////////////
 # Account user functions
 # ///////////////////////////////////////////////
@@ -64,10 +63,14 @@ def get_current_user():
 # /////////////////////////////////////////////////
 @main.route('/', methods=['GET'])
 def index():
+    error=request.args.get('error')
+    confirmation=request.args.get('confirmation')
     user = get_current_user()
     sorting_system = request.args.get('sorting_system')
     products = get_products(sorting_system)
-    return render_template('index.html', customer=user, products=products, sorting_system=sorting_system)
+    if products is None:
+        return render_template('index.html', customer=user, products=products, sorting_system=sorting_system, error="Products could not be loaded form database.")
+    return render_template('index.html', customer=user, products=products, sorting_system=sorting_system, error=error, confirmation=confirmation)
 
 @main.route('/product', methods=['GET', 'POST'])
 def product(product_id=None):
@@ -87,7 +90,8 @@ def product(product_id=None):
             new_order_details = OrderDetails(orderdetailid = new_order_details_id, orderid=new_order_id, productid=product_id, quantity=quantity, createdat=datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
             db.session.add(new_order_details)
             db.session.commit()
-            return redirect(url_for('main.index'))
+            return redirect(url_for('main.index', confirmation="Order placed"))
+        return redirect(url_for('main.index', error="You are not logged in."))
     
     if product_id is None or supplier_id is None or category_id is None:
         return render_template('product.html', product=None)
@@ -128,12 +132,13 @@ def register():
 
         db.session.add(new_user)
         db.session.commit()
-        return redirect(url_for("main.login"))
+        return redirect(url_for("main.login", confirmation="Account created"))
     return render_template("sign_up.html")
 
 # Login user route
 @main.route("/login", methods=["GET", "POST"])
 def login():
+    confirmation=request.args.get('confirmation')
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -148,7 +153,7 @@ def login():
             return redirect(url_for("main.index"))  
         else:
             return render_template("login.html", error="Invalid username or password")
-    return render_template("login.html")
+    return render_template("login.html", confirmation=confirmation)
 
 # Logout user route
 @main.route("/logout")
@@ -161,6 +166,12 @@ def logout():
 @main.route("/customer", methods=["GET"])
 @login_required
 def customer():
+    # Modal arguments
+    notice=request.args.get('notice')
+    error=request.args.get('error')
+    confirmation=request.args.get('confirmation')
+
+    # Get user info
     customer = Customers.query.filter_by(customerid=current_user.customerid).first()
     orders = Orders.query.filter_by(customerid=current_user.customerid).all()
 
@@ -171,7 +182,7 @@ def customer():
             product = Products.query.filter_by(productid=order_detail.productid).first()
             ordered_products[order_detail.orderdetailid] = {"productid": product.productid , "productname": product.productname,  "unitprice": product.price, "quantity": order_detail.quantity, "createdat": order.orderdate}
 
-    return render_template("customer.html", customer=customer, orders=ordered_products)
+    return render_template("customer.html", customer=customer, orders=ordered_products, notice=notice, error=error, confirmation=confirmation)
 
 # Change user password
 @main.route("/customer/reset", methods=["POST"])
@@ -187,47 +198,46 @@ def change_password():
         if new_password == '':
             customers.password = None
             db.session.commit()
-            return redirect(url_for("main.index"))
+            return redirect(url_for("main.customer", confirmation="Password changed"))
         customers.password = generate_password_hash(new_password, method="pbkdf2:sha256")
         db.session.commit()
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.customer", confirmation="Password changed"))
     else:
-        # TODO: add error message
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.customer", error="Incorrect password"))
 
 # Change user info
 @main.route("/customer/edit", methods=["POST"])
 @login_required
 def edit_customer():
     customer = Customers.query.filter_by(customerid=current_user.customerid).first()
-    
     # Dictionary mapping: "HTML Form Name" -> "Database Column Name"
     field_map = {
-        "username": "customername", 
-        "contact_name": "contactname", 
-        "address": "address", 
-        "city": "city", 
-        "postal_code": "postalcode", 
-        "country": "country"
+        "new_name": "customername", 
+        "new_contact": "contactname", 
+        "new_address": "address", 
+        "new_city": "city", 
+        "new_postalcode": "postalcode", 
+        "new_country": "country"
     }
 
+    if request.form.get('new_name') == '':
+        return redirect(url_for("main.customer", notice="Name cannot be empty"))
     for form_field, db_column in field_map.items():
         new_value = request.form.get(form_field)
         final_value = new_value if new_value != "" else None
-        
         # Dynamically set the attribute on the customer object
         setattr(customer, db_column, final_value)
 
     db.session.commit()
-    return redirect(url_for("main.customer"))
+    return redirect(url_for("main.customer", confirmation="Customer info changed"))
 
 # Delete order
-@main.route("/customer/delete/<order_detail_id>", methods=["DELETE"])
+@main.route("/customer/delete/<order_detail_id>", methods=["POST"])
 @login_required
 def delete_order(order_detail_id):
     OrderDetails.query.filter(OrderDetails.orderdetailid == order_detail_id).delete()
     db.session.commit()
-    return redirect(url_for("main.customer"))
+    return redirect(url_for("main.customer", notice="Order deleted"))
 
 # TODO: disable database get
 # Test database and check connection

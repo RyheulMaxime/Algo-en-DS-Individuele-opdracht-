@@ -1,0 +1,109 @@
+  {% if error %}
+  <div id="modal-error" class="overlay is-open" role="alertdialog" aria-modal="true">
+    <div class="modal modal--status" role="document" aria-labelledby="error-title">
+      
+      <div class="modal__icon-box">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+
+      <h2 id="error-title" class="modal__header--status">Notice</h2>
+      
+      <p class="modal__text--status">
+        {{ error }}
+      </p>
+      
+      <div class="modal__actions" style="justify-content: center;">
+        <button class="btn btn--primary" id="btn-error-close">Understood</button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if confirmation %}
+  <div id="modal-confirmation" class="overlay is-open" role="alertdialog" aria-modal="true">
+    <div class="modal modal--status modal--success" role="document" aria-labelledby="success-title">
+      
+      <div class="modal__icon-box">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <h2 id="success-title" class="modal__header--status">Success</h2>
+      
+      <p class="modal__text--status">
+        {{ confirmation }}
+      </p>
+      
+      <div class="modal__actions" style="justify-content: center;">
+        <button class="btn btn--primary" id="btn-confirmation-close">Great!</button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if notice %}
+  <div id="modal-notice" class="overlay is-open" role="alertdialog" aria-modal="true" aria-hidden="false">
+    <div class="modal modal--status modal--notice" role="document" aria-labelledby="notice-title">
+      
+      <div class="modal__icon-box">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+
+      <h2 id="notice-title" class="modal__header--status">Notification</h2>
+      
+      <p class="modal__text--status">
+        {{ notice }}
+      </p>
+      
+      <div class="modal__actions" style="justify-content: center;">
+        <button class="btn btn--primary" id="btn-notice-close">Okay</button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+<script>
+    (function(){
+        const els = { 
+            errorClose: document.getElementById('btn-error-close'),
+            confirmationClose: document.getElementById('btn-confirmation-close'),
+            noticeClose: document.getElementById('btn-notice-close'),
+
+            errorModal: document.getElementById('modal-error'),
+            confirmationModal: document.getElementById('modal-confirmation'),
+            noticeModal: document.getElementById('modal-notice')
+        };
+
+        function toggleModal(modal, isOpen) {
+            if (!modal) return;
+            if (isOpen) {
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            const firstInput = modal.querySelector('input, button');
+            if (firstInput) firstInput.focus();
+            } else {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            }
+        }
+        
+        // Close Actions
+        if (els.errorClose) els.errorClose.addEventListener('click', () => toggleModal(els.errorModal, false));
+        if (els.confirmationClose) els.confirmationClose.addEventListener('click', () => toggleModal(els.confirmationModal, false));
+        if (els.noticeClose) els.noticeClose.addEventListener('click', () => toggleModal(els.noticeModal, false));
+
+        // Global Escape Key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+            toggleModal(els.errorModal, false);
+            toggleModal(els.confirmationModal, false);
+            toggleModal(els.noticeModal, false);
+            }
+        });
+    })();
+</script>

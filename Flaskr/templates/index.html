@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
+
   {% include 'header.html' %}
 
   <section class="toolbar" aria-label="Search and sort products">
@@ -80,36 +81,8 @@
     <div id="empty-state-js" class="empty-state" style="display:none">No products found.</div>
   </main>
 
-  <div id="modal-login" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal" role="document" aria-labelledby="login-title">
-      <h2 id="login-title" class="modal__title">Login to your account</h2>
-      <form id="form-login" class="js-login-form" autocomplete="on">
-        <label for="username" class="sr-only">Username</label>
-        <input id="username" class="input-control" name="username" type="text" placeholder="Username" required autocomplete="username" style="margin-top:0.5rem" />
-        
-        <label for="password" class="sr-only">Password</label>
-        <input id="password" class="input-control" name="password" type="password" placeholder="Password" autocomplete="current-password" style="margin-top:0.5rem" />
-        
-        <div class="modal__actions">
-          <button type="button" class="btn btn--ghost" id="btn-login-cancel">Cancel</button>
-          <button type="submit" class="btn btn--primary">Login</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  {% include 'modals.html' %}
 
-  <div id="modal-error" class="overlay" role="alertdialog" aria-modal="true" aria-hidden="true">
-    <div class="modal" role="document" aria-labelledby="error-title">
-      <h2 id="error-title" class="modal__title">Login failed</h2>
-      <p id="error-message" class="modal__text">Unable to log in. Please check your credentials and try again.</p>
-      <div class="modal__actions">
-        <button class="btn btn--ghost" id="btn-error-close">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  
   <script>
     (function () {
       'use strict';
@@ -121,17 +94,6 @@
         sortButton: document.getElementById('btn-sort'),
         resultsCount: document.getElementById('results-count'),
         emptyStateJs: document.getElementById('empty-state-js'),
-        
-        
-        // Modals
-        loginOverlay: document.getElementById('modal-login'),
-        errorOverlay: document.getElementById('modal-error'),
-        loginForm: document.getElementById('form-login'),
-        loginCancel: document.getElementById('btn-login-cancel'),
-        errorClose: document.getElementById('btn-error-close'),
-        
-        // Triggers (Buttons that might not exist based on auth state)
-        openLoginBtn: document.getElementById('open-login'),
       };
 
       // Cache product nodes for filtering performance
@@ -186,22 +148,6 @@
         window.location.href = '/?sorting_system=' + encodeURIComponent(value);
       }
 
-      // --- Modal Management ---
-      function setOverlayState(overlay, isOpen) {
-        if (!overlay) return;
-        
-        if (isOpen) {
-          overlay.classList.add('is-open');
-          overlay.setAttribute('aria-hidden', 'false');
-          // Focus trap helper: focus first interactive element
-          const firstInput = overlay.querySelector('input, button');
-          if (firstInput) firstInput.focus();
-        } else {
-          overlay.classList.remove('is-open');
-          overlay.setAttribute('aria-hidden', 'true');
-        }
-      }
-
       // --- Event Listeners ---
       
       // Search Input
@@ -213,46 +159,6 @@
       if (els.sortButton) {
         els.sortButton.addEventListener('click', applySorting);
       }
-
-      // Modal Triggers
-      if (els.openLoginBtn) {
-        els.openLoginBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          setOverlayState(els.loginOverlay, true);
-        });
-      }
-
-      if (els.loginCancel) {
-        els.loginCancel.addEventListener('click', () => setOverlayState(els.loginOverlay, false));
-      }
-
-      if (els.errorClose) {
-        els.errorClose.addEventListener('click', () => setOverlayState(els.errorOverlay, false));
-      }
-
-      // Global Keyboard Shortcuts
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          setOverlayState(els.loginOverlay, false);
-          setOverlayState(els.errorOverlay, false);
-        }
-      });
-
-      // --- Socket.IO & Login Logic (WIP) ---
-      let socket = null;
-      try {
-        socket = io();
-      } catch (err) {
-        console.warn('Socket.IO init failed:', err);
-      }
-
-      /* * TODO: Socket-based login logic.
-       * Currently disabled per requirements "For later does not seem to work with socket".
-       * * Implementation plan:
-       * 1. Listen to 'submit' on els.loginForm
-       * 2. Emit 'login' event
-       * 3. Handle 'login_failed' and 'login_success' socket events
-       */
 
       // Initial State
       filterProducts((els.searchInput && els.searchInput.value) || '');

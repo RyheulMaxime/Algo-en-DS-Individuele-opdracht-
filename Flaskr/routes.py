@@ -106,8 +106,7 @@ def supplier(supplier_id=None):
     supplier_id = request.args.get('id')
     
     if supplier_id is None:
-        # TODO return to index with error
-        return render_template('supplier.html', supplier=None)
+        return redirect(url_for("main.login", error="Supplier not found"))
     
     supplier_info = Suppliers.query.get(int(supplier_id))
     supplier_products = Products.query.filter_by(supplierid=supplier_id).all()
